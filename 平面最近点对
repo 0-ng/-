@@ -2,10 +2,6 @@ https://blog.csdn.net/GGN_2015/article/details/80785621
 https://www.cnblogs.com/zyxStar/p/4591897.html
 C - Quoit Design HDU - 1007 
 
-bool cmpXY(Point& p1,Point& p2){
-    if(cmp(p1.x,p2.x)==0) return p1.y<p2.y;
-    return p1.x<p2.x;
-}
 bool cmpY(int& a,int& b){
     return p[a].y<p[b].y;
 }
@@ -37,6 +33,6 @@ double Closest_Pair(int left, int right){
     return d;
 }
 void solve(){
-    sort(p+1,p+n+1, cmpXY);
+    sort(p+1,p+n+1);
     printf("%.2f\n",Closest_Pair(1,n)/2);
 }
