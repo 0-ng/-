@@ -1,0 +1,31 @@
+
+Point circumCenter(Point a, Point b, Point c){ //返回三角形的外心
+    Point ret;
+    double a1 = b.x-a.x,b1 = b.y-a.y,c1 = (a1*a1+b1*b1)/2;
+    double a2 = c.x-a.x,b2 = c.y-a.y,c2 = (a2*a2+b2*b2)/2;
+    double d = a1*b2-a2*b1;
+    ret.x=a.x+(c1*b2-c2*b1)/d;
+    ret.y=a.y+(a1*c2-a2*c1)/d;
+    return ret;
+}
+void min_cover_circle(Point p[],int n,Circle &c) {
+    c.c = p[1], c.r = 0;
+    for (int i = 2; i <= n; i++) {
+        if (cmp(p[i].disToPoint(c.c),c.r) > 0) {
+            c.c = p[i];
+            c.r = 0;
+            for (int j = 1; j <= i; j++) {
+                if (cmp(p[j].disToPoint(c.c),c.r) > 0) {
+                    c.c = Point((p[i].x + p[j].x) / 2, (p[i].y + p[j].y) / 2);
+                    c.r = p[j].disToPoint(c.c);
+                    for (int g = 1; g <= j; g++) {
+                        if (cmp(p[g].disToPoint(c.c), c.r) > 0) {
+                            c.c = circumCenter(p[i], p[j], p[g]);
+                            c.r = p[i].disToPoint(c.c);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
