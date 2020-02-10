@@ -1,0 +1,15 @@
+double rotating_calipers_S(Point* stk,int mn){//最大三角形面积
+    stk[mn+1]=stk[1];
+    int cur=2;
+    double ret=0;
+    for(int i=1;i<=mn;i++){
+        for(int j=i+1;j<=mn;j++){
+            Vector v = stk[i]-stk[j];
+            while((v^(stk[cur+1]-stk[cur])) < 0)
+                cur = (cur%mn+1);
+            double tmp=max((stk[cur]-stk[i])^v,(stk[cur+1]-stk[j])^v);
+            ret = max(ret,tmp);
+        }
+    }
+    return fabs(ret)/2;
+}
