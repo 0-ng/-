@@ -45,3 +45,25 @@ struct halfplanes{
             res[++resn] = Q[head]&Q[tail];
     }
 }hpi;
+
+
+-------------------------------------------------多项式
+            double a=0,b=0,c=0;
+            a=2*(X[i]-X[j]);
+            b=2*(Y[i]-Y[j]);
+            c=XX[j]+YY[j]-XX[i]-YY[i];
+
+            Point pp;
+            if(sgn(a)==0){
+                pp={0,-c/b};
+            }else{
+                pp={-c/a,0};
+            }
+            Vector v={b,-a};
+            hpi.line[++hpi.n]={pp,pp+v};
+
+//            Vector v=Vector(b,-a);
+//            Point p;
+//            if(fabs(a)>fabs(b)) p=Point(-c/a,0);
+//            else p=Point(0,-c/b);
+//            hpi.line[++hpi.n]=Line(p,p+v);
