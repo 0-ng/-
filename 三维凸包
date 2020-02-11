@@ -2,6 +2,12 @@ J - 3D Convex Hull HDU - 3662
 
 
 
+inline double area(Point3 o, Point3 a, Point3 b) {
+    return ((o-a)^(o-b)).len();
+}//三角形面积*2
+inline double volume(Point3 o, Point3 a, Point3 b, Point3 c) {
+    return ((o-a)^(o-b))*(c-o) / 6.0;
+}
 struct CH3D {
     struct face {
         int a, b, c;//表示凸包一个面上的三个点的编号
@@ -163,7 +169,7 @@ struct CH3D {
         return ans;
     }//三维凸包重心
     double ptoface(Point3 p, int i) {
-        return fabs(
+        return 6*fabs(
                 volume(P[F[i].a], P[F[i].b], P[F[i].c], p) / ((P[F[i].b] - P[F[i].a]) ^ (P[F[i].c] - P[F[i].a])).len()
                 );
     }//点到面的距离
