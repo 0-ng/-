@@ -47,14 +47,14 @@ struct Point{
     }
     int inPolygon(Point poly[]);//点是否在多边形内部
     void read(){scanf("%lf%lf",&x,&y);}
-    Point operator+(Vector v){return {x+v.x,y+v.y};}
-    Vector operator-(Point p){return {x-p.x,y-p.y};}
-    double operator^(Vector v){return x*v.y-y*v.x;}//叉乘
-    double operator*(Vector v){return x*v.x+y*v.y;}//点乘
-    Vector operator*(double d){return {x*d,y*d};}
-    Vector operator/(double d){return {x/d,y/d};}
-    bool operator==(Point p){return cmp(x,p.x)==0&&cmp(y,p.y)==0;}
-    bool operator<(Point p){if(cmp(x,p.x)==0) return y<p.y;return x<p.x;}
+    Point operator+(const Vector v)const{return {x+v.x,y+v.y};}
+    Vector operator-(const Point p)const{return {x-p.x,y-p.y};}
+    double operator^(const Vector v)const{return x*v.y-y*v.x;}//叉乘
+    double operator*(const Vector v)const{return x*v.x+y*v.y;}//点乘
+    Vector operator*(const double d)const{return {x*d,y*d};}
+    Vector operator/(const double d)const{return {x/d,y/d};}
+    bool operator==(const Point p)const{return cmp(x,p.x)==0&&cmp(y,p.y)==0;}
+    bool operator<(const Point p)const{if(cmp(x,p.x)==0) return y<p.y;return x<p.x;}
 };
 struct Line{
     Line(){}
