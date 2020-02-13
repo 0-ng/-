@@ -1,0 +1,33 @@
+double rota(int n){
+    Vector v;
+    int up=2;
+    int left=2;
+    int right=2;
+    double ret=1e9;
+    for(int down=1;down<=n;down++) {
+
+        v = stk[down] - stk[down + 1];
+        while (sgn(v ^ (stk[up + 1] - stk[up])) <= 0)
+            up = up % n + 1;
+
+//        right=down;
+        while(cmp((stk[down+1]-stk[down])*(stk[right]-stk[down]),
+                (stk[down+1]-stk[down])*(stk[right+1]-stk[down]))<=0)
+            right=right%n+1;
+
+        left=up%n+1;
+        while(cmp((stk[left]-stk[down+1])*(stk[down]-stk[down+1]),
+                (stk[left+1]-stk[down+1])*(stk[down]-stk[down+1]))<=0)
+            left=left%n+1;
+
+
+        double h=((stk[down+1]-stk[down])^(stk[up]-stk[down]));
+        double w=(((stk[left]-stk[down])*(stk[down]-stk[down+1]))+((stk[down+1]-stk[down])*(stk[right]-stk[down])));
+        ret=min(ret,h*w/(stk[down+1]-stk[down]).norm());
+    }
+    return ret;
+}
+void solve(){
+    int len=Andrew();
+    printf("%.0f\n",rota(len));
+}
