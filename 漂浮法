@@ -1,0 +1,17 @@
+void cov(int l,int r,int idx,int now){
+    if(l>r) return;
+    while(idx<=n&&(l>line[idx].r||r<line[idx].l))
+        idx++;
+    if(idx>n){
+        ans[now]+=(r-l+1);
+        return;
+    }
+    if(l>=line[idx].l&&r<=line[idx].r)
+        return;
+    if(l<=line[idx].r){
+        cov(line[idx].r+1,r,idx+1,now);
+    }
+    if(r>=line[idx].l){
+        cov(l,line[idx].l-1,idx+1,now);
+    }
+}
