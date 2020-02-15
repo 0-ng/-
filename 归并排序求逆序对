@@ -1,0 +1,25 @@
+
+long long a[MAXN],b[MAXN];
+long long merge_sort(int l,int r){
+    if(l>=r) return 0;
+    int mid=(l+r)>>1;
+    long long ret=merge_sort(l,mid);
+    ret+=merge_sort(mid+1,r);
+    int i=l,j=mid+1;
+    int num=l;
+    while(i<=mid&&j<=r){
+        if(a[i]<=a[j])
+            b[num++]=a[i++];
+        else{
+            b[num++]=a[j++];
+            ret+=mid-i+1;
+        }
+    }
+    while(i<=mid)
+        b[num++]=a[i++];
+    while(j<=r)
+        b[num++]=a[j++];
+    for(i=l;i<=r;i++)
+        a[i]=b[i];
+    return ret;
+}
