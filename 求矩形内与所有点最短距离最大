@@ -1,0 +1,45 @@
+
+Point p[2005];
+double getDis(Point a){
+    double dis=1e9;
+    for(int i=1;i<=n;i++)
+        dis=min(dis,a.disToPoint(p[i]));
+    return dis;
+}
+Point ans[30];
+double dis[30];
+Point sa(){
+    for(int i=1;i<=20;i++){
+        ans[i].x=(rand()%1000+1)/1000.0*x;
+        ans[i].y=(rand()%1000+1)/1000.0*y;
+        dis[i]=getDis(ans[i]);
+    }
+    srand(time(0));
+    double t=300;
+    while(t>1e-7){
+        for(int i=1;i<=20;i++){
+            for(int j=1;j<=20;j++){
+                Point tmp=ans[i];
+                double angle=rand()%1000/1000.0*2*PI;
+                tmp.x+=t*cos(angle)*(rand()%1000/1000.0);
+                tmp.y+=t*sin(angle)*(rand()%1000/1000.0);
+                if(tmp.x<0||tmp.x>x||tmp.y<0||tmp.y>y)continue;
+                double tmpdis=getDis(tmp);
+                if(tmpdis>dis[i]){
+                    dis[i]=tmpdis;
+                    ans[i]=tmp;
+                }
+            }
+        }
+        t*=0.96;
+    }
+    double dd=0;
+    int pp=0;
+    for(int i=1;i<=20;i++){
+        if(getDis(ans[i])>dd){
+            dd=getDis(ans[i]);
+            pp=i;
+        }
+    }
+    return ans[pp];
+}
