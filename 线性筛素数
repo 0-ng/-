@@ -1,5 +1,5 @@
 
-int prime[maxa],minprime[maxa];
+int prime[maxa],minprime[maxa];//minprime相当于原来的vis，只是存放的是i的最小因子
 int a[maxn],b1[maxn],b2[maxn];
 int euler(int n){
     int c=0;
