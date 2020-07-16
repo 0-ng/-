@@ -1,13 +1,14 @@
-int prime[1100000],primesize;
-bool isprime[11000000];
-void getlist(int listsize){
-    memset(isprime,1,sizeof(isprime));
-    isprime[1]=false;
-    for(int i=2;i<=listsize;i++){
-        if(isprime[i])prime[++primesize]=i;
-         for(int j=1;j<=primesize&&i*prime[j]<=listsize;j++) {
-            isprime[i*prime[j]]=false;
-            if(i%prime[j]==0) break;//保证了每个合数只会被它的最小素因子筛掉，就把复杂度降到了O(N)
+
+int prime[maxa],minprime[maxa];
+int a[maxn],b1[maxn],b2[maxn];
+int euler(int n){
+    int c=0;
+    for(int i=2;i<=n;i++){
+        if(!minprime[i]) prime[++c]=i,minprime[i]=i;
+        for(int j=1;j<=c&&i*prime[j]<=n;j++){
+            minprime[i*prime[j]]=prime[j];
+            if(i%prime[j]==0) break;
         }
     }
+    return c;
 }
