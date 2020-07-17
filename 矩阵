@@ -1,0 +1,142 @@
+struct Matrix {
+    int m, n;
+    long long A[210][210];
+    long long A_inv[210][210];
+    Matrix(){}
+    Matrix(int _m, int _n) {
+        m = _m;
+        n = _n;
+        memset(A, 0, sizeof(A));
+    }
+    void init(int _m,int _n) {
+        m = _m;
+        n = _n;
+    }
+    void read(){
+        for(int i=1;i<=m;i++)
+            for(int j=1;j<=n;j++)
+                scanf("%lld",A[i]+j);
+    }
+    Matrix operator+(const Matrix mat) const {
+        Matrix ans{m, n};
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++) {
+                ans.A[i][j] = A[i][j] + mat.A[i][j];
+                if (ans.A[i][j] >= mod)
+                    ans.A[i][j] -= mod;
+            }
+        return ans;
+    }
+
+    Matrix operator-(const Matrix mat) const {
+        Matrix ans{m, n};
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++) {
+                ans.A[i][j] = A[i][j] - mat.A[i][j];
+                if (ans.A[i][j] < 0)
+                    ans.A[i][j] += mod;
+            }
+        return ans;
+    }
+
+    Matrix operator*(const Matrix mat) const {
+        Matrix ans{m, mat.n};
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < mat.n; j++)
+                for (int k = 0; k < n; k++)
+                    (ans.A[i][j] += A[i][k] * mat.A[k][j]) %= mod;
+        return ans;
+    }
+
+    long long q_pow(long long a, long long x) {
+        long long cnt = 1;
+        while (x) {
+            if (x & 1)
+                cnt = cnt * a % mod;
+            a = a * a % mod;
+            x >>= 1;
+        }
+        return cnt;
+    }
+
+    long long inv(long long a, long long x) {
+        return q_pow(a,x-2);
+    }
+
+    bool Gauss(int n) {
+        memarray(A_inv, 0);
+        for(int i=1;i<=n;i++)
+            A_inv[i][i]=1;
+        for (int i = 1; i <= n; i++) {
+            for (int j = i; j <= n; j++) {
+                if (A[j][i]) {
+                    for (int k = 1; k <= n&& !A[i][i]; k++){
+                        swap(A[i][k], A[j][k]);
+                        swap(A_inv[i][k], A_inv[j][k]);
+                    }
+                }
+            }
+            if (!A[i][i]) {
+                puts("No Solution");
+                return false;
+            }
+            long long inv_ = inv(A[i][i], mod);
+
+            for (int j = i; j <= n; j++)
+                A[i][j] = A[i][j] * inv_ % mod;
+            for (int j = 1; j <= n; j++)
+                A_inv[i][j] = A_inv[i][j] * inv_ % mod;
+
+            for (int j = 1; j <= n; j++) {
+                if (j != i) {
+                    long long m = A[j][i];
+                    for (int k = i; k <= n; k++){
+                        A[j][k] = (A[j][k] - m * A[i][k] % mod + mod) % mod;
+                    }
+                    for (int k = 1; k <= n; k++){
+                        A_inv[j][k] = (A_inv[j][k] - m * A_inv[i][k] % mod + mod) % mod;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    Matrix T() {
+        Matrix ans{n, m};
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++)
+                ans.A[j][i] = A[i][j];
+        return ans;
+    }
+
+    long long det() {
+        long long ans = 1;
+        Matrix o = (*this);
+        for (int i = 0; i < n; i++) {
+            if (!o.A[i][i]) {
+                int pos = 0;
+                for (int j = i + 1; j < n; j++)
+                    if (o.A[j][i]) {
+                        pos = j;
+                        break;
+                    }
+                if (!pos)return 0;
+                for (int j = i; j < n; j++)
+                    swap(o.A[i][j], o.A[pos][j]);
+                ans = -ans;
+            }
+            for (int j = 0; j < n; j++)
+                if (i != j) {
+                    long long tmp = o.A[j][i] * q_pow(o.A[i][i], mod - 2) % mod;
+                    for (int k = i; k < n; k++) {
+                        o.A[j][k] = (o.A[j][k] - o.A[i][k] * tmp) % mod + mod;
+                        if (o.A[j][k] > mod)o.A[j][k] -= mod;
+                    }
+                }
+            (ans *= o.A[i][i]) %= mod;
+        }
+        if (ans < 0)ans += mod;
+        return ans;
+    }
+}matrix;
