@@ -1,0 +1,21 @@
+
+struct KMP
+{
+    int n, next[maxn], t[maxn];
+    void build(char *r, int len)
+    {
+        int i, j=0;
+        n=len;
+        for(i=1;i<=len;i++)t[i]=r[i];  t[len+1]=0;
+        for(i=2;i<=len;i++)
+        {
+            for(;j and t[j+1]!=t[i];j=next[j]);
+            next[i] = t[j+1]==t[i]?++j:0;
+        }
+    }
+    int move(int pos, int x)
+    {
+        for(;pos and t[pos+1]!=x;pos=next[pos]);
+        return t[pos+1]==x ? pos+1 : 0;
+    }
+}kmp;
