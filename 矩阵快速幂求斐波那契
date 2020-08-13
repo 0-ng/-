@@ -1,3 +1,6 @@
+//斐波那契前n项和为F(n+2)-1
+//斐波那契前n项平方和和为(F(n)+F(n-1))*F(n)//几何画图证明
+
 struct Matrix{
     long long a[2][2];
     Matrix operator*(Matrix matrix){
