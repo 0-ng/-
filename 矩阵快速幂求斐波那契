@@ -15,7 +15,7 @@ long long ksm(Matrix a,long long x){
         a=a*a;
         x>>=1;
     }
-    return ret.a[0][0];
+    return ret.a[0][1];
 }
 void solve(){
     Matrix mat={1,1,1,0};
