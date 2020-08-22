@@ -1,0 +1,69 @@
+long long chushi[MAXN], Min[MAXN * 4], Max[MAXN * 4];//记得开4倍空间
+void pushup(int rt) {
+    Min[rt] = min(Min[rt<<1], Min[rt<<1|1]);
+    Max[rt] = max(Max[rt<<1], Max[rt<<1|1]);
+}
+void build(int l, int r, int rt) {
+    if (l == r){
+        Min[rt] = chushi[l];
+        Max[rt] = chushi[l];
+        return;
+    }
+    int mid = (l + r)>>1;
+    build(l, mid, rt<<1);
+    build(mid + 1, r, rt<<1|1);
+    pushup(rt);
+}
+int qurrymax(int x, int y, int l, int r, int rt) {
+    if (x <= l && y >= r) {
+        return Max[rt];
+    }
+    int mid = (l + r)>>1;
+    int ret = -1e9;
+    if (x <= mid) ret = max(ret, qurrymax(x, y, l, mid, rt<<1));//如果这个区间的左儿子和目标区间有交集那么搜索左儿子
+    if (y > mid) ret = max(ret, qurrymax(x, y, mid + 1, r, rt<<1|1));//如果这个区间的右儿子和目标区间有交集那么搜索右儿子
+    return ret;
+}
+int qurrymin(int x, int y, int l, int r, int rt) {
+    if (x <= l && y >= r) {
+        return Min[rt];
+    }
+    int mid = (l + r)>>1;
+    int ret=1e9;
+    if (x <= mid) ret = min(ret, qurrymin(x, y, l, mid, rt<<1));//如果这个区间的左儿子和目标区间有交集那么搜索左儿子
+    if (y > mid) ret = min(ret, qurrymin(x, y, mid + 1, r, rt<<1|1));//如果这个区间的右儿子和目标区间有交集那么搜索右儿子
+    return ret;
+}
+void update(int x, int c, int l, int r, int rt) {
+    if (l == r) {
+        Min[rt] = c;
+        Max[rt] = c;
+        return;
+    }
+    int mid = (l + r)>>1;
+    if (x <= mid)update(x, c, l, mid, rt<<1);
+    else update(x, c, mid + 1, r, rt<<1|1);
+    pushup(rt);
+}
+void solve(){
+
+    long long op,l,r;
+    while(m--){
+        scanf("%lld%lld %lld", &op, &l, &r);
+        if(op==2){
+            if(qurrymax(l,r,1,n,1)-qurrymin(l,r,1,n,1)==r-l){
+                printf("YES\n");
+            }else{
+                printf("NO\n");
+            }
+        }
+        else
+            update(l, r, 1, n, 1);
+    }
+}
+void init(){
+    scanf("%d%d",&n,&m);
+    for(int i=1;i<=n;i++)
+        scanf("%d",chushi+i);
+    build(1,n,1);
+}
