@@ -46,3 +46,177 @@ int query(int L,int R,int l,int r,int rt){
     if(R>mid)ret+=query(L,R,rson);
     return ret;
 }
+//////////////////////////////////////////////////////////
+//树链剖分线段树区间加区间乘区间赋值求区间立方和
+long long W[MAXN];
+vector<int>vec[MAXN];
+int son[MAXN],bigson[MAXN];
+int fa[MAXN],depth[MAXN];
+void dfs1(int now,int pre){
+    son[now]=1;
+    int mx=0;
+    for(auto to:vec[now]){
+        if(to==pre)continue;
+        fa[to]=now;
+        depth[to]=depth[now]+1;
+        dfs1(to,now);
+        son[now]+=son[to];
+        if(son[to]>mx){
+            bigson[now]=to;
+            mx=son[to];
+        }
+    }
+}
+int cnt;
+int dfn[MAXN],top[MAXN],pos[MAXN];
+void dfs2(int now,int tp){
+    dfn[now]=++cnt;
+    top[now]=tp;
+    pos[cnt]=now;
+    if(son[now]==1)return;
+    dfs2(bigson[now],tp);
+    for(auto to:vec[now]){
+        if(to==fa[now]||to==bigson[now])continue;
+        dfs2(to,to);
+    }
+}
+long long sum1[MAXN<<2],sum2[MAXN<<2],sum3[MAXN<<2];
+long long lazyMul[MAXN<<2],lazyAdd[MAXN<<2];
+void solve(int l,int r,int rt,long long a,long long b){
+    if(a!=1){
+        long long w1=a;
+        long long w2=(a*a)%mod;
+        long long w3=(a*a)%mod*a%mod;
+
+        sum1[rt]=(sum1[rt]*w1)%mod;
+        sum2[rt]=(sum2[rt]*w2)%mod;
+        sum3[rt]=(sum3[rt]*w3)%mod;
+
+        lazyMul[rt]=(lazyMul[rt]*a)%mod;
+        lazyAdd[rt]=(lazyAdd[rt]*a)%mod;
+    }
+    if(b!=0){
+        long long w1=b;
+        long long w2=(b*b)%mod;
+        long long w3=(b*b)%mod*b%mod;
+
+        sum3[rt]=(sum3[rt]+3*w1*sum2[rt]%mod)%mod;
+        sum3[rt]=(sum3[rt]+3*w2*sum1[rt]%mod)%mod;
+        sum3[rt]=(sum3[rt]+(r-l+1)*w3%mod)%mod;
+
+        sum2[rt]=(sum2[rt]+2*w1*sum1[rt]%mod)%mod;
+        sum2[rt]=(sum2[rt]+(r-l+1)*w2)%mod;
+
+        sum1[rt]=(sum1[rt]+(r-l+1)*w1)%mod;
+
+        lazyAdd[rt]=(lazyAdd[rt]+b)%mod;
+
+    }
+}
+void push_up(int rt){
+    sum1[rt]=(sum1[rt<<1]+sum1[rt<<1|1])%mod;
+    sum2[rt]=(sum2[rt<<1]+sum2[rt<<1|1])%mod;
+    sum3[rt]=(sum3[rt<<1]+sum3[rt<<1|1])%mod;
+}
+void push_down(int l,int r,int rt){
+    int x=lazyMul[rt];
+    int y=lazyAdd[rt];
+
+    int mid=(l+r)>>1;
+    solve(l,mid,rt<<1,x,y);
+    solve(mid+1,r,rt<<1|1,x,y);
+
+    lazyMul[rt]=1;
+    lazyAdd[rt]=0;
+}
+void build(int l,int r,int rt){
+    lazyMul[rt]=1;
+    lazyAdd[rt]=0;
+    if(l==r){
+        long long w=W[pos[l]];
+        sum1[rt]=w;
+        sum2[rt]=(w*w)%mod;
+        sum3[rt]=(w*w)%mod*w%mod;
+        return;
+    }
+    int mid=(l+r)>>1;
+    build(l,mid,rt<<1);
+    build(mid+1,r,rt<<1|1);
+    push_up(rt);
+}
+long long getsum3(int l,int r,int L,int R,int rt){
+    if(L<=l&&r<=R){
+        return sum3[rt];
+    }
+    push_down(l,r,rt);
+    int mid=(l+r)>>1;
+    long long ret=0;
+    if(L<=mid) ret+=getsum3(l,mid,L,R,rt<<1);
+    if(R>mid) ret+=getsum3(mid+1,r,L,R,rt<<1|1);
+    push_up(rt);
+    return ret%mod;
+}
+void update(int l,int r,int L,int R,long long a,long long b,int rt){
+    if(L<=l&&r<=R){
+        solve(l,r,rt,a,b);
+        return;
+    }
+    int mid=(l+r)>>1;
+    push_down(l,r,rt);
+    if(L<=mid)update(l,mid,L,R,a,b,rt<<1);
+    if(R>mid)update(mid+1,r,L,R,a,b,rt<<1|1);
+    push_up(rt);
+}
+void update(int x,int y,long long a,long long b){//ax+b
+    while(top[x]!=top[y]){
+        if(depth[top[x]]<depth[top[y]])swap(x,y);
+        update(1,n,dfn[top[x]],dfn[x],a,b,1);
+        x=fa[top[x]];
+    }
+    if(depth[x]<depth[y])swap(x,y);
+    update(1,n,dfn[y],dfn[x],a,b,1);
+}
+long long query(int x,int y){
+    long long ret=0;
+    while(top[x]!=top[y]){
+        if(depth[top[x]]<depth[top[y]])swap(x,y);
+        ret=(ret+getsum3(1,n,dfn[top[x]],dfn[x],1))%mod;
+        x=fa[top[x]];
+    }
+    if(depth[x]<depth[y])swap(x,y);
+    ret=(ret+getsum3(1,n,dfn[y],dfn[x],1))%mod;
+    return ret;
+}
+void solve(){
+    dfs1(1,0);
+    dfs2(1,1);
+    build(1,n,1);
+    int q;scanf("%d",&q);
+    int op,u,v;
+    long long w;
+    while(q--){
+        scanf("%d",&op);
+        if(op!=4){
+            scanf("%d%d%lld",&u,&v,&w);
+            if(op==1) update(u,v,0,w);
+            else if(op==2) update(u,v,1,w);
+            else update(u,v,w,0);
+        }else{
+            scanf("%d%d",&u,&v);
+            printf("%lld\n",query(u,v));
+        }
+    }
+}
+void init(){
+    scanf("%d",&n);
+    cnt=0;
+    for(int i=1;i<=n;i++)
+        vec[i].clear();
+    for(int i=1,u,v;i<n;i++){
+        scanf("%d%d",&u,&v);
+        vec[u].pb(v);
+        vec[v].pb(u);
+    }
+    for(int i=1;i<=n;i++)
+        scanf("%lld",W+i);
+}
