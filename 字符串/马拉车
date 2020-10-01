@@ -1,0 +1,50 @@
+char beginn[MAXN],endd[MAXN];
+int len[MAXN];
+int  tralation()
+{
+	int gg=strlen(beginn);
+	int noww=0;
+	endd[0]='&';
+	for(int i=0;i<gg;i++)
+	{
+		endd[++noww]='#';
+		endd[++noww]=beginn[i];
+	}
+	endd[++noww]='#';
+	return noww;
+}
+int Manacher(int total)
+{
+	int maxx = 0;
+	int mx = 0,id = 0; //id表示的最大回文的中心点是哪一个 而mx表示的是最大回文的中心点的最远的边界是哪一个
+	for(int i =1;i<=total;i++)
+	{
+		if(i<mx) //如果此刻 i的点比mx还要小的话说明 在mx-i处这边是回文 然后在比较一下
+			len[i] = min(mx - i,len[2*id-i]); //因为2*id - i 和 i 他们是相对于id对称的 所以说吧 就是要比较mx-i和len[2*id-i] ;
+		else len[i] = 1; //如果此刻i的点比边界还要大的话 那就需要从一开始加了
+		while(endd[i+len[i]]==endd[i-len[i]])
+			len[i]++;
+		if(i+len[i]>mx)
+		{
+			mx = i+len[i];
+			id = i;
+		}
+		/*能到结尾最长的回文串 murderforajarof=6*/
+		if(i+len[i]-1==total){
+            maxx = max(maxx,len[i]);
+		}
+		/**/
+		
+		/*最长的回文串*/
+		maxx = max(maxx,len[i]);
+		/**/
+	}
+	return maxx-1;
+}
+void solve(){
+
+    int total = tralation();
+    int ans = Manacher(total);
+    printf("%d\n",n-ans);
+
+}
