@@ -1,0 +1,13 @@
+long long getSum(long long n){//求1-n的因子和（不包括1和本身）
+    long long ans=0;
+    for(long long i=2;i<=sqrt(n);i++)
+    {
+        ans+=(n/i-1)*i;
+        if(n/i>sqrt(n))
+        {
+            long long  q=n/i;long long p=sqrt(n)+1;
+            ans+=(q-p+1)*(q+p)/2;
+        }
+    }
+    return ans;
+}
