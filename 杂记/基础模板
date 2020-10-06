@@ -1,0 +1,26 @@
+
+#include<map>
+#include<set>
+#include<cmath>
+#include<queue>
+#include<stack>
+#include<ctime>
+#include<vector>
+#include<cstdio>
+#include<vector>
+#include<string>
+#include<bitset>
+#include<cstdlib>
+#include<iomanip>
+#include<cstring>
+#include<iostream>
+#include<algorithm>
+using namespace std;
+#define pb push_back
+#define memarray(array, value) memset(array, value, sizeof(array))
+const double EPS=1e-8;
+const double PI=acos(-1);
+const long long mod=1e9+7;
+const int INF=0x3f3f3f3f; 
+const int MAXN=1e5+10;
+const int N=1e5+10;
