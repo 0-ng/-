@@ -1,0 +1,91 @@
+/*
+2
+08:00 09:00 30
+08:15 09:00 20
+
+YES
+08:00 08:30
+08:40 09:00
+*/
+struct Edge{
+    int l,r;
+}edge[MAXN];
+int dfn[MAXN],low[MAXN],fa[MAXN];
+int cnt,fanum;
+stack<int>s;
+vector<int>vec[MAXN];
+int ans[MAXN];
+void tarjan(int now){
+    dfn[now]=low[now]=++cnt;
+    s.push(now);
+    for(int i=0,len=vec[now].size();i<len;i++){
+        int to=vec[now][i];
+        if(!dfn[to]){
+            tarjan(to);
+            low[now]=min(low[now],low[to]);
+        }else if(!fa[to]){
+            low[now]=min(low[now],low[to]);
+        }
+    }
+    if(dfn[now]==low[now]){
+        fanum++;
+        while(1){
+            int t=s.top();s.pop();
+            fa[t]=fanum;
+            if(t==now)break;
+        }
+    }
+}
+void print(){
+    for(int i=2;i<=(n<<1|1);i+=2){
+        if(fa[i]<fa[i^1])ans[i>>1]=i;
+        else ans[i>>1]=i^1;
+    }
+    printf("YES\n");
+    for(int i=1;i<=n;i++){
+        int l=edge[ans[i]].l;
+        int r=edge[ans[i]].r;
+        printf("%02d:%02d %02d:%02d\n",l/60,l%60,r/60,r%60);
+    }
+}
+void solve(){
+    for(int i=2;i<=(n<<1|1);i++){
+        if(!dfn[i])
+            tarjan(i);
+    }
+    for(int i=2;i<=(n<<1|1);i++){
+        if(fa[i]==fa[i^1]){
+            printf("NO\n");
+            return;
+        }
+    }
+    print();
+}
+bool judge(int l1,int r1,int l2,int r2){
+    return (l1 < r2 && l2 < r1);
+}
+void init(){
+    scanf("%d",&n);
+    for(int i=1,h,m,l,r;i<=n;i++){
+        scanf("%d:%d",&h,&m);
+        l=h*60+m;
+        scanf("%d:%d",&h,&m);
+        r=h*60+m;
+        scanf("%d",&m);
+        edge[i<<1]={l,l+m};
+        edge[i<<1|1]={r-m,r};
+    }
+    for(int i=2;i<=(n<<1);i++){
+        for(int j=i+1;j<=(n<<1|1);j++){
+            if((i>>1)==(j>>1))continue;
+            if(judge(edge[i].l,edge[i].r,edge[j].l,edge[j].r)){
+                if(judge(edge[i].l,edge[i].r,edge[j^1].l,edge[j^1].r)){
+                    vec[i].pb(i^1);
+                }else{
+                    vec[i].pb(j^1);
+                    vec[j].pb(i^1);
+                }
+            }
+        }
+    }
+}
