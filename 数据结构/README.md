@@ -5,8 +5,7 @@
 ### [4. 线段树](#4)
 ### [5. 线段树区间最大最小单点修改](#5)
 
-<span id="1"><h4>1.	KMP</h4></span>
-#### 1. RMQ
+<span id="1"><h4>1.	RMQ</h4></span>
 ```cpp
 int dpmx[MAXN][21];
 int dpmn[MAXN][21];
