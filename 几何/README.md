@@ -1,23 +1,22 @@
 
-#### 1.	几何
-#### 2.	直线与凸多边形交点
-#### 3.	凸包Andrew
-#### 4.	凸包Graham
-#### 5.	判断线段相交
-#### 6.	半平面交
-#### 7.	四面体内切球
-#### 8.	平面最近点对
-#### 9.	旋转卡壳求最大三角形面积
-#### 10.	最小圆覆盖
-#### 11.	模拟退火求矩阵内所有点最小距离最大
-#### 12.	矩阵面积凸包最小矩形覆盖
-#### 13.	稳定凸包
-#### 14.   simpson积分
-#### 15.   三维几何凸包
-#### 16.   平面最近点对
+### [1.	几何](#1)
+### [2.	直线与凸多边形交点](#2)
+### [3.	凸包Andrew](#3)
+### [4.	凸包Graham](#4)
+### [5.	判断线段相交](#5)
+### [6.	半平面交](#6)
+### [7.	四面体内切球](#7)
+### [8.	平面最近点对](#8)
+### [9.	旋转卡壳求最大三角形面积](#9)
+### [10. 最小圆覆盖](#10)
+### [11. 模拟退火求矩阵内所有点最小距离最大](#11)
+### [12. 矩阵面积凸包最小矩形覆盖](#12)
+### [13. 稳定凸包](#13)
+### [14. simpson积分](#14)
+### [15. 三维几何凸包](#15)
+### [16. 平面最近点对](#16)
 
-
-#### 1.	几何
+<span id="1"><h4>1. 几何</h4></span>
 ```cpp
 const double EPS=1e-8;
 const double PI=acos(-1);
@@ -493,7 +492,7 @@ struct Polygon {
     }
 };
 ```
-#### 2.	直线与凸多边形交点
+<span id="2"><h4>2.	直线与凸多边形交点</h4></span>
 ```cpp
 vector<Point> convexCut(const vector<Point> &ps,Point q1,Point q2){
     //`直线切凸多边形`
@@ -512,7 +511,7 @@ vector<Point> convexCut(const vector<Point> &ps,Point q1,Point q2){
     return qs;
 }
 ```
-#### 3.	凸包Andrew
+<span id="3"><h4>3.	凸包Andrew</h4></span>
 ```cpp
 double Andrew(){
     sort(p+1,p+1+n);
@@ -535,7 +534,7 @@ double Andrew(){
     return sum;//凸包的边长,点数为2时特判
 }
 ```
-#### 4.	凸包Graham
+<span id="4"><h4>4.	凸包Graham</h4></span>
 ```cpp
 Point base;
 bool grahamCmp(Point& p1,Point& p2){
@@ -561,7 +560,7 @@ int graham(){
     return k;
 }
 ```
-#### 5.	判断线段相交
+<span id="5"><h4>5.	判断线段相交</h4></span>
 ```cpp
 struct Line{
     Point s;
@@ -591,7 +590,7 @@ bool inter(Line l1,Line l2){
     sgn(Cross(l1.s-l2.s,l2.e-l2.s))*sgn(Cross(l2.e-l2.s,l1.e-l2.s))>=0;
 }
 ```
-#### 6.	半平面交
+<span id="6"><h4>6.	半平面交</h4></span>
 ```cpp
 bool HPIcmp(Line a,Line b) {
     if (fabs(a.ang - b.ang) > EPS)return a.ang < b.ang;
@@ -663,7 +662,7 @@ struct halfplanes{
 //            else p=Point(0,-c/b);
 //            hpi.line[++hpi.n]=Line(p,p+v);
 ```
-#### 7.	四面体内切球
+<span id="7"><h4>7.	四面体内切球</h4></span>
 https://blog.csdn.net/helloiamclh/article/details/51971951
 ↑注意求xyz那里不是除6而是除(s1+s2+s3+s4)
 I - tetrahedron HDU - 5733
@@ -687,7 +686,7 @@ I - tetrahedron HDU - 5733
     double r=Point3(x,y,z).point_to_plane(p[1],p[2],p[3]);//r=3*V/(s1+s2+s3+s4)
     printf("%.4f %.4f %.4f %.4f\n",x,y,z,r);
 ```
-#### 8.	平面最近点对
+<span id="7"><h4>8.	平面最近点对</h4></span>
 https://blog.csdn.net/GGN_2015/article/details/80785621
 https://www.cnblogs.com/zyxStar/p/4591897.html
 C - Quoit Design HDU - 1007
@@ -727,7 +726,7 @@ void solve(){
     printf("%.2f\n",Closest_Pair(1,n)/2);
 }
 ```
-#### 9.	旋转卡壳求最大三角形面积
+<span id="9"><h4>9.	旋转卡壳求最大三角形面积</h4></span>
 ```cpp
 double rotating_calipers_S(Point* stk,int mn){//最大三角形面积
     stk[mn+1]=stk[1];
@@ -771,7 +770,7 @@ void solve(){
     printf("%.2f\n",rota(len));
 }
 ```
-#### 10.	最小圆覆盖
+<span id="10"><h4>10. 最小圆覆盖</h4></span>
 ```cpp
 Point circumCenter(Point a, Point b, Point c){ //返回三角形的外心
     Point ret;
@@ -804,7 +803,7 @@ void min_cover_circle(Point p[],int n,Circle &c) {
     }
 }
 ```
-#### 11.	模拟退火求矩阵内与所有点最小距离最大
+<span id="11"><h4>11. 模拟退火求矩阵内与所有点最小距离最大</h4></span>
 ```cpp
 Point p[2005];
 double getDis(Point a){
@@ -851,7 +850,7 @@ Point sa(){
     return ans[pp];
 }
 ```
-#### 12.	矩阵面积凸包最小矩形覆盖
+<span id="12"><h4>12. 矩阵面积凸包最小矩形覆盖</h4></span>
 ```cpp
 double rota(int n){
     Vector v;
@@ -887,7 +886,7 @@ void solve(){
     printf("%.0f\n",rota(len));
 }
 ```
-#### 13.	稳定凸包
+<span id="13"><h4>13. 稳定凸包</h4></span>
 ```cpp
 Point p[1010],stk[1010];
 int Andrew(){
@@ -924,7 +923,7 @@ void solve(){
     printf("YES\n");
 }
 ```
-#### 14.	simpson积分
+<span id="14"><h4>14. simpson积分</h4></span>
 ```cpp
 int w,t,v;
 struct unb{
@@ -984,7 +983,7 @@ void solve(){
     printf("%.2f\n",simpson(0,t,simpson(0,t))*v);
 }
 ```
-#### 15.	三维几何凸包
+<span id="15"><h4>15. 三维几何凸包</h4></span>
 ```cpp
 struct Point3{
     double x,y,z;
@@ -1200,7 +1199,7 @@ void solve(){
 
 }
 ```
-#### 16.   平面最近点对
+<span id="16"><h4>16. 平面最近点对</h4></span>
 ```cpp
 https://blog.csdn.net/GGN_2015/article/details/80785621
 https://www.cnblogs.com/zyxStar/p/4591897.html
