@@ -965,16 +965,19 @@ int dis[MAXN];
 int dfs(int now,int flow){
     if(now==t)return flow;
     int f=0;
-    for(int i=head[now];i;i=edge[i].nx){
+    for(int &i=cur[now];i;i=edge[i].nx){
         int to=edge[i].to;
         if(dis[to]!=dis[now]+1||edge[i].w==0)continue;
-        int tmp=dfs(to,min(edge[i].w,flow-f));
+        int tmp=dfs(to,min(edge[i].w,flow));
+        flow-=tmp;
         edge[i].w-=tmp;edge[i^1].w+=tmp;
         f+=tmp;
+        if(flow<=0)break;
     }
     return f;
 }
 bool bfs(){
+    memcpy(cur,head,sizeof(head));
     memarray(dis,0);
     dis[s]=1;
     queue<int>q;
