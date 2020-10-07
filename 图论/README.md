@@ -945,7 +945,7 @@ void init(){
 
 
 <span id="15"><h4>15. 最小割</h4></span>
-···cpp
+```cpp
 struct Edge{
     int nx;
     int to;
