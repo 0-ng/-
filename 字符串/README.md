@@ -1,8 +1,8 @@
 
-#### 1.	KMP
-#### 2.	马拉车
+### [1.	KMP](#1)
+### [2.	马拉车](#2)
 
-#### 1.	KMP
+<span id="1"><h4>1.	KMP</h4></span>
 ```cpp
 // s[]是长文本，p[]是模式串，n是s的长度，m是p的长度
 /*求模式串的Next数组：*/
@@ -26,7 +26,7 @@ for (int i = 1, j = 0; i <= n; i ++ )
 }
 ```
 
-#### 2.	马拉车
+<span id="2"><h4>2.	马拉车</h4></span>
 ```cpp
 char beginn[MAXN],endd[MAXN];
 int len[MAXN];
