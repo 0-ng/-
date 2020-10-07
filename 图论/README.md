@@ -25,7 +25,7 @@
 4. 一棵树最多有两个重心，且相邻。
 
 
-<span id="0"><h4>1. Johnson 全源最短路</h4></span>
+<span id="1"><h4>1. Johnson 全源最短路</h4></span>
 ```cpp
 //先用SPFA求出虚点0到n个点的距离，若有负环则退出，否则更新每条边的权值使其为正，然后对n个点进行dijkstra求dis
 
@@ -121,7 +121,7 @@ void init(){
     }
 }
 ```
-<span id="0"><h4>2. Dijkstra最短路</h4></span>
+<span id="2"><h4>2. Dijkstra最短路</h4></span>
 ```cpp
 struct Edge{
     int to;
@@ -154,7 +154,7 @@ void dijkstra(int s){
     }
 }
 ```
-<span id="0"><h4>3. Floyd最短路</h4></span>
+<span id="3"><h4>3. Floyd最短路</h4></span>
 ```cpp
 for(int k=1;k<=n;k++)
     for(int i=1;i<=n;i++)
@@ -255,7 +255,7 @@ void init(){
     }
 }
 ```
-<span id="0"><h4>4. LCA</h4></span>
+<span id="4"><h4>4. LCA</h4></span>
 ```cpp
 vector<int>vec[MAXN];
 int depth[MAXN];
@@ -291,7 +291,7 @@ struct LCA{
     }
 }lca;
 ```
-<span id="0"><h4>5. Tarjan找割点</h4></span>
+<span id="5"><h4>5. Tarjan找割点</h4></span>
 ```cpp
 vector<int>vec[MAXN];
 int dfn[MAXN],low[MAXN];
@@ -336,7 +336,7 @@ void init(){
     }
 }
 ```
-<span id="0"><h4>6. Tarjan找强连通分量个数</h4></span>
+<span id="6"><h4>6. Tarjan找强连通分量个数</h4></span>
 ```cpp
 vector<int>vec[MAXN];
 int dfn[MAXN],low[MAXN];
@@ -389,7 +389,7 @@ void init(){
     }
 }
 ```
-<span id="0"><h4>7. Tarjan缩点求路径最大点权和</h4></span>
+<span id="7"><h4>7. Tarjan缩点求路径最大点权和</h4></span>
 ```cpp
 vector<int>vec[MAXN];
 int stac[MAXN];
@@ -465,7 +465,7 @@ void init(){
     }
 }
 ```
-<span id="0"><h4>8. 二分图最大匹配匈牙利算法</h4></span>
+<span id="8"><h4>8. 二分图最大匹配匈牙利算法</h4></span>
 ```cpp
 int pei[505];
 vector<int>vec[505];
@@ -490,7 +490,7 @@ void solve(){
     printf("%d\n",ans);
 }
 ```
-<span id="0"><h4>9. 拓扑排序</h4></span>
+<span id="9"><h4>9. 拓扑排序</h4></span>
 ```cpp
 int tp(){
     queue<int>q;
@@ -516,7 +516,7 @@ int tp(){
     return ret;
 }
 ```
-<span id="0"><h4>10. 最大流</h4></span>
+<span id="10"><h4>10. 最大流</h4></span>
 ```cpp
 char a[MAXN],b[MAXN];
 struct node{
@@ -594,7 +594,7 @@ void init(){
     }
 }
 ```
-<span id="0"><h4>11. 最小费用最大流</h4></span>
+<span id="11"><h4>11. 最小费用最大流</h4></span>
 ```cpp
 const int MAXN=2e2+10;
 int INF=0x3f3f3f3f;
@@ -683,7 +683,7 @@ void init(){
     }
 }
 ```
-<span id="0"><h4>12. 欧拉路径</h4></span>
+<span id="12"><h4>12. 欧拉路径</h4></span>
 ```cpp
 void fleury(int start) {
     int u = start;
@@ -697,7 +697,7 @@ void fleury(int start) {
     }
 }
 ```
-<span id="0"><h4>13. 树链剖分</h4></span>
+<span id="13"><h4>13. 树链剖分</h4></span>
 ```cpp
 //已知一棵包含 NN 个结点的树（连通且无环），每个节点上包含一个数值，需要支持以下操作：
 //操作 1： 格式： 1 x y z 表示将树从 x 到 y 结点最短路径上所有节点的值都加上 z。
@@ -847,7 +847,7 @@ void init(){
     }
 }
 ```
-<span id="0"><h4>15. 2-sat输出可行解</h4></span>
+<span id="14"><h4>14. 2-sat输出可行解</h4></span>
 ```cpp
 /*
 2
