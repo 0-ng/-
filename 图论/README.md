@@ -2,9 +2,11 @@
 [跳转到更新](#### 1. Update)                // 如果标题有空格，则应该用 a 标签
 
 <a href="#性质">跳转到更新</a>
-<a href="#Update">跳转到更新</a>
+<a href="#Update1">跳转到更新</a>
+<a href="#Update2">跳转到更新</a>
 
-#### 1. Update
+#### 1. Update1
+#### Update2
 # 图论
 #### 0.性质
 #### 1.	Johnson 全源最短路
