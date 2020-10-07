@@ -1,17 +1,17 @@
 
-#### 1.大素数模板
-#### 2.1-n因子和或个数
-#### 3.	线性筛素数
-#### 4.	exgcd求逆元
-#### 5.	求解ax+by=c
-#### 6.	矩阵
-#### 7.	矩阵快速幂
-#### 8.	矩阵快速幂求斐波那契
-#### 9.	中国剩余问题
-#### 10.	min25求前n素数和
+### [1.大素数模板](#1)
+### [2.1-n因子和或个数](#2)
+### [3.	线性筛素数](#3)
+### [4.	exgcd求逆元](#4)
+### [5.	求解ax+by=c](#5)
+### [6.	矩阵](#6)
+### [7.	矩阵快速幂](#7)
+### [8.	矩阵快速幂求斐波那契](#8)
+### [9.	中国剩余问题](#9)
+### [10. min25求前n素数和](#10)
 
 
-#### 1.大素数模板
+<span id="1"><h4>1. 大素数模板</h4></span>
 ```cpp
 #include <bits/stdc++.h>
 #define ll long long
@@ -142,7 +142,7 @@ int main()
     return 0;
 }
 ```
-#### 2.1-n因子和或个数
+<span id="2"><h4>2. 1-n因子和或个数</h4></span>
 ```cpp
 long long getSum(long long n){//求1-n的因子和（不包括1和本身）
     long long ans=0;
@@ -175,7 +175,7 @@ long long getSum(long long n){//求1-n的因子个数和
     return ans+n+n-1;//（1和自身）
 }
 ```
-#### 3.	线性筛素数
+<span id="3"><h4>3.	线性筛素数</h4></span>
 ```cpp
 int prime[MAXN],minprime[MAXN];//minprime相当于原来的vis，只是存放的是i的最小因子
 int euler(int n){
@@ -190,7 +190,7 @@ int euler(int n){
     return c;
 }
 ```
-#### 4.	exgcd求逆元
+<span id="4"><h4>4.	exgcd求逆元</h4></span>
 ```cpp
 long long exgcd(long long a,long long b,long long &x,long long &y)//扩展欧几里得算法
 {
@@ -210,7 +210,7 @@ long long getInv(long long a,long long mod)//求a在mod下的逆元，不存在�
     return d==1?(x%mod+mod)%mod:-1;
 }
 ```
-#### 5.	求解ax+by=c
+<span id="5"><h4>5.	求解ax+by=c</h4></span>
 ```cpp
 template<class T> void exgcd(T a,T b,T &d,T &x,T &y){
     if(!b) {d=a;x=1;y=0;}
@@ -232,7 +232,7 @@ template<class T> bool Solve_equation(T a,T b,T c,T &x,T& y){
     return true;
 }
 ```
-#### 6.	矩阵
+<span id="6"><h4>6.	矩阵</h4></span>
 ```cpp
 struct Matrix {
     int m, n;
@@ -377,7 +377,7 @@ struct Matrix {
     }
 }matrix;
 ```
-#### 7.	矩阵快速幂
+<span id="7"><h4>7.	矩阵快速幂</h4></span>
 ```cpp
 struct Matrix{
     int n;
@@ -410,7 +410,7 @@ long long ksm(Matrix a,long long x){
 }
 Matrix mat(N);
 ```
-#### 8.	矩阵快速幂求斐波那契
+<span id="8"><h4>8.	矩阵快速幂求斐波那契</h4></span>
 //斐波那契前n项和为F(n+2)-1
 //斐波那契前n项平方和和为(F(n)+F(n-1))*F(n)//几何画图证明
 ```
@@ -438,7 +438,7 @@ void solve(){
     printf("%lld\n",ksm(mat,n));
 }
 ```
-#### 9.	中国剩余问题
+<span id="9"><h4>9.	中国剩余问题</h4></span>
 ```cpp
 int a[10],b[10];
 long long qmod(long long a,long long b,long long mod){
@@ -518,8 +518,7 @@ void init(){
         scanf("%d",&a[i]);
 }
 ```
-
-#### 10.	min25求前n素数和
+<span id="10"><h4>10. min25求前n素数和</h4></span>
 ```cpp
 
 ################################素数和↓
