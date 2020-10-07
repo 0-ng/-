@@ -1,13 +1,13 @@
-#### 1.	基础模板
-#### 2.	快读快写
-#### 3.	漂浮法
-#### 4.	归并排序求逆序对
-#### 5.	大整数模板
-#### 6. 快速约瑟夫环求最后一个
-#### 7. 高速1\sqrt
+### [1.	基础模板](#1)
+### [2.	快读快写](#2)
+### [3.	漂浮法](#3)
+### [4.	归并排序求逆序对](#4)
+### [5.	大整数模板](#5)
+### [6. 快速约瑟夫环求最后一个](#6)
+### [7. 高速1\sqrt](#7)
 
 ---------------------
-#### 1.	基础模板
+<span id="1"><h4>1.	基础模板</h4></span>
 ```cpp
 #include<map>
 #include<set>
@@ -35,7 +35,7 @@ const int INF=0x3f3f3f3f;
 const int MAXN=1e5+10;
 const int N=1e5+10;
 ```
-#### 2.	快读快写
+<span id="2"><h4>2.	快读快写</h4></span>
 ```cpp
 inline __int128 read(){//输入模板
     __int128 x=0,f=1;
@@ -59,7 +59,7 @@ inline void print(__int128 x){//输出模板
     putchar(x%10+'0');
 }
 ```
-#### 3.	漂浮法
+<span id="3"><h4>3.	漂浮法</h4></span>
 ```cpp
 void cov(int l,int r,int idx,int now){
     if(l>r) return;
@@ -79,7 +79,7 @@ void cov(int l,int r,int idx,int now){
     }
 }
 ```
-#### 4.	归并排序求逆序对
+<span id="4"><h4>4.	归并排序求逆序对</h4></span>
 ```cpp
 long long a[MAXN],b[MAXN];
 long long merge_sort(int l,int r){
@@ -106,7 +106,7 @@ long long merge_sort(int l,int r){
     return ret;
 }
 ```
-#### 5.	大整数模板
+<span id="5"><h4>5.	大整数模板</h4></span>
 ```cpp
 struct BigInteget{ // 非负整数范围运行
     int digit[N];
@@ -314,9 +314,7 @@ void BigInteget::show(){
         printf("%d", digit[i]);
 }
 ```
-
-
-#### 6. 快速约瑟夫环求最后一个
+<span id="6"><h4>6. 快速约瑟夫环求最后一个</h4></span>
 ```cpp
 long long joser(long long n,long long k,long long s=1)
 {
@@ -348,7 +346,7 @@ void solve(){
     else printf("%lld\n",ans);
 }
 ```
-#### 7. 高速1\sqrt
+<span id="7"><h4>7. 高速1\sqrt</h4></span>
 ```cpp
 float Q_rsqrt( float number ){
    int i;
