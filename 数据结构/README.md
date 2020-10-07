@@ -1,9 +1,11 @@
-#### 1. RMQ
-#### 2. 二维ST表max min
-#### 3. 带权并查集
-#### 4. 线段树
-#### 5. 线段树区间最大最小单点修改
 
+### [1. RMQ](#1)
+### [2. 二维ST表max min](#2)
+### [3. 带权并查集](#3)
+### [4. 线段树](#4)
+### [5. 线段树区间最大最小单点修改](#5)
+
+<span id="1"><h4>1.	KMP</h4></span>
 #### 1. RMQ
 ```cpp
 int dpmx[MAXN][21];
@@ -38,7 +40,8 @@ void init(){
     }
 }
 ```
-#### 2. 二维ST表max min
+<span id="2"><h4>2. 二维ST表max min</h4></span>
+```cpp
 const int N = 1010;
 int a[N][N],n,m,len,Log[N];
 int st[3][N][N][15];//0最小，1最大值
@@ -102,7 +105,8 @@ int main(){
 	printf("%d\n",ans);
 	return 0;
 }
-#### 3. 带权并查集
+```
+<span id="3"><h4>3. 带权并查集</h4></span>
 ```cpp
 int fa[MAXN];
 int dis[MAXN];
@@ -141,7 +145,7 @@ void init(){
     }
 }
 ```
-#### 4. 线段树
+<span id="4"><h4>4. 线段树</h4></span>
 ```cpp
 int tree[MAXN<<2];
 int tag[MAXN<<2];
@@ -367,7 +371,7 @@ void init(){
 }
 
 ```
-#### 5. 线段树区间最大最小单点修改
+<span id="5"><h4>5. 线段树区间最大最小单点修改</h4></span>
 ```cpp
 long long chushi[MAXN], Min[MAXN * 4], Max[MAXN * 4];//记得开4倍空间
 void pushup(int rt) {
