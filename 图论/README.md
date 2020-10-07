@@ -6,11 +6,11 @@
 <a href="#Update2">跳转到更新</a>
 
 
-<span id="1. Update1">Hello World</span>
+<span id="1">Hello World</span>
 
  2. 然后使用markdown的语法:
 
-[XXXX](#1. Update1)
+[XXXX](#1)
 
 #### 1. Update1
 #### Update2
