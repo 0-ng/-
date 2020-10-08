@@ -16,7 +16,7 @@
 ### [13.	树链剖分](#13)
 ### [14.  2-sat输出可行解](#14)
 ### [15. 最小割](#15)
-
+### [16. 最小路径覆盖](#16)
 
 <span id="0"><h4>0. 性质</h4></span>
 树的重心性质：
@@ -1015,5 +1015,105 @@ void init(){
         add(u+n,v,INF);add(v,u+n,0);
         add(v+n,u,INF);add(u,v+n,0);
     }
+}
+```
+
+
+<span id="16"><h4>16. 最小路径覆盖</h4></span>
+```cpp
+struct Edge{
+    int nx,to,w;
+}edge[MAXN];
+int cnt=1;
+int head[MAXN];
+void add(int u,int v,int w){
+    cnt++;
+    edge[cnt].to=v;
+    edge[cnt].w=w;
+    edge[cnt].nx=head[u];
+    head[u]=cnt;
+
+    cnt++;
+    edge[cnt].to=u;
+    edge[cnt].w=0;
+    edge[cnt].nx=head[v];
+    head[v]=cnt;
+}
+int dis[MAXN];
+int cur[MAXN];
+int s,t;
+bool bfs(){
+    memcpy(cur,head,sizeof head);
+    memarray(dis,0);
+    queue<int>q;
+    q.push(s);
+    dis[s]=1;
+    while(!q.empty()){
+        int now=q.front();q.pop();
+        for(int i=head[now];i;i=edge[i].nx){
+            int to=edge[i].to;
+            if(dis[to]||edge[i].w==0)continue;
+            dis[to]=dis[now]+1;
+            q.push(to);
+        }
+    }
+    return dis[t];
+}
+int ansto[MAXN];
+bool tag[MAXN];
+int dfs(int now,int flow){
+    if(now==t)return flow;
+    int ret=0;
+    for(int i=head[now];~i;i=edge[i].nx){
+        int to=edge[i].to;
+        if(dis[to]!=dis[now]+1||edge[i].w==0)continue;
+        int tmp=dfs(to,min(flow,edge[i].w));
+        if(tmp<=0)continue;
+        ansto[now]=to;
+        if(now!=s)tag[to-n]=1;
+
+        flow-=tmp;
+        edge[i].w-=tmp;edge[i^1].w+=tmp;
+        ret+=tmp;
+//        return ret;
+        if(flow<=0)break;
+    }
+    return ret;
+}
+
+int dinic(){
+    int ret=0;
+    while(bfs()){
+        ret+=dfs(s,INF);
+    }
+    return ret;
+}
+void solve(){
+    int ans=dinic();
+    for(int i=1;i<=n;i++){
+        if(!tag[i]){
+            int now=i;
+            printf("%d",now);
+            while(ansto[now]&&ansto[now]!=t){
+                printf(" %d",ansto[now]-n);
+                now=ansto[now]-n;
+            }
+            printf("\n");
+        }
+    }
+    printf("%d\n",n-ans);
+}
+void init(){
+    memarray(head,-1);
+    scanf("%d%d",&n,&m);
+    s=2*n+5,t=s+1;
+    for(int i=1,u,v;i<=m;i++){
+        scanf("%d%d",&u,&v);
+        add(u,v+n,1);
+    }
+    for(int i=1;i<=n;i++)
+        add(s,i,1);
+    for(int i=1;i<=n;i++)
+        add(i+n,t,1);
 }
 ```
