@@ -17,6 +17,7 @@
 ### [14.  2-sat输出可行解](#14)
 ### [15. 最小割](#15)
 ### [16. 最小路径覆盖](#16)
+### [17. 最长不降序列数量](#17)
 
 <span id="0"><h4>0. 性质</h4></span>
 树的重心性质：
@@ -1118,5 +1119,67 @@ void init(){
         add(s,i,1);
     for(int i=1;i<=n;i++)
         add(i+n,t,1);
+}
+```
+
+
+<span id="17"><h4>17. 最长不降序列数量</h4></span>
+给定正整数序列
+计算其最长不下降子序列的长度 s.
+如果每个元素只允许使用一次，计算从给定的序列中最多可取出多少个长度为 s 的不下降子序列。
+如果允许在取出的序列中多次使用	
+ （其他元素仍然只允许使用一次），则从给定序列中最多可取出多少个不同的长度为 s 的不下降子序列。
+```cpp
+int a[505],dp[505];
+void init(){
+    scanf("%d",&n);
+    for(int i=1;i<=n;i++){
+        scanf("%d",a+i);
+        dp[i]=1;
+    }
+    if(n==1){
+        printf("1\n");
+        printf("1\n");
+        printf("1\n");
+        return;
+    }
+    int len=1;
+    for(int i=2;i<=n;i++){
+        for(int j=1;j<i;j++){
+            if(a[i]>=a[j])
+                dp[i]=max(dp[i],dp[j]+1);
+        }
+        len=max(len,dp[i]);
+    }
+    printf("%d\n",len);
+    s=0,t=2*n+1;
+
+    for(int i=1;i<=n;i++){
+        if(dp[i]==1)
+            add(s,i,1);
+    }
+    for(int i=1;i<=n;i++){
+        if(dp[i]==len)
+            add(i+n,t,1);
+    }
+    for(int i=1;i<=n;i++)
+        add(i,i+n,1);
+    for(int i=1;i<=n;i++){
+        for(int j=i+1;j<=n;j++){
+            if(a[i]>a[j]||dp[j]!=dp[i]+1)continue;
+            add(i+n,j,1);
+        }
+    }
+    int ans=dinic();
+    printf("%d\n",ans);
+
+    add(s,1,INF);
+    add(1,1+n,INF);
+    if(dp[n]==len){
+        add(n+n,t,INF);
+        add(n,n+n,INF);
+    }
+    ans+=dinic();
+    printf("%d\n",ans);
 }
 ```
