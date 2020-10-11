@@ -1224,7 +1224,7 @@ int KM()
     {
         lx[i]=-INF;
         for(int j=1; j<=ny; j++)
-            lx[i]=min(lx[i],g[i][j]);
+            lx[i]=max(lx[i],g[i][j]);
     }
     for(int x=1; x<=nx; x++)
     {
