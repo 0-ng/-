@@ -4,6 +4,7 @@
 ### [3. 带权并查集](#3)
 ### [4. 线段树](#4)
 ### [5. 线段树区间最大最小单点修改](#5)
+### [6. 树状数组](#6)
 
 <span id="1"><h4>1.	RMQ</h4></span>
 ```cpp
@@ -441,4 +442,63 @@ void init(){
         scanf("%d",chushi+i);
     build(1,n,1);
 }
+```
+
+<span id="6"><h4>6. 树状数组</h4></span>
+```cpp
+struct BIT{//单点修改区间查询
+    int n;
+    long long c[MAXN];
+    void update(int x,long long val){//单点修改
+        for(x;x<=n;x+=lowbit(x))
+            c[x]+=val;
+    }
+    long long query(int x){//区间查询
+        int ret=0;
+        for(x;x;x-=lowbit(x))
+            ret+=c[x];
+        return ret;
+    }
+    /*
+    int sum=query(idx);//前idx个数的和
+     
+     差分[1-idx]区间加1
+    update(1,1);
+    update(idx+1,-1);
+     */
+};
+struct BIT{//区间修改区间查询
+    int n;
+    long long sum1[MAXN];    //(D[1] + D[2] + ... + D[n])
+    long long sum2[MAXN];    //(1*D[1] + 2*D[2] + ... + n*D[n])
+    void updata(int i,long long k){//修改前i个数
+        int x = i;    //因为x不变，所以得先保存i值
+        while(i <= n){
+            sum1[i] += k;
+            sum2[i] += k * (x-1);
+            i += lowbit(i);
+        }
+    }
+    long long getsum(int i){        //求前缀和 前i个数的和
+        long long res = 0, x = i;
+        while(i > 0){
+            res += x * sum1[i] - sum2[i];
+            i -= lowbit(i);
+        }
+        return res;
+    }
+    /*
+    cin>>n;
+    for(int i = 1; i <= n; i++){
+        cin>>a[i];
+        updata(i,a[i] - a[i-1]);   //输入初值的时候，也相当于更新了值
+    }
+    //[x,y]区间内加上k
+    updata(x,k);    //A[x] - A[x-1]增加k
+    updata(y+1,-k);        //A[y+1] - A[y]减少k
+
+    //求[x,y]区间和
+    int sum = getsum(y) - getsum(x-1);
+     */
+};
 ```
