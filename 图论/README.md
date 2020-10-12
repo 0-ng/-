@@ -20,6 +20,7 @@
 ### [17. 最长不降序列数量](#17)
 ### [18. 二分图的最佳完美匹配KM算法](#18)
 ### [19. 最小费用最大流（逐步炒菜）](#19)
+### [20. 志愿者代价](#20)
 
 <span id="0"><h4>0. 性质</h4></span>
 树的重心性质：
@@ -1406,4 +1407,32 @@ void init(){
     for(int i=1;i<=m;i++)
         mcmf.layer[i]=1;
 }
+```
+
+<span id="20"><h4>20. 志愿者代价</h4></span>
+```cpp
+/*一个志愿者从l到r，费用w，每天需求的志愿者不同，问最小代价*/
+/*
+3 3
+2 3 4
+1 2 2
+2 3 5
+3 3 2
+*/
+/*
+14
+*/
+scanf("%d%d",&n,&m);
+s=n+5;t=s+1;
+mcmf.init(t);
+for(int i=1,p;i<=n;i++){
+    scanf("%d",&p);
+    mcmf.add_edge(i,i+1,INF-p,0);
+}
+for(int i=1,l,r,w;i<=m;i++){
+    scanf("%d%d%d",&l,&r,&w);
+    mcmf.add_edge(l,r+1,INF,w);
+}
+mcmf.add_edge(s,1,INF,0);
+mcmf.add_edge(n+1,t,INF,0);
 ```
