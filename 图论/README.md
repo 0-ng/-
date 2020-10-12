@@ -19,6 +19,7 @@
 ### [16. 最小路径覆盖](#16)
 ### [17. 最长不降序列数量](#17)
 ### [18. 二分图的最佳完美匹配KM算法](#18)
+### [19. 最小费用最大流（逐步炒菜）](#19)
 
 <span id="0"><h4>0. 性质</h4></span>
 树的重心性质：
@@ -1273,5 +1274,136 @@ void init()
     for(int i=1; i<=n; i++)
         for(int j=1; j<=n; j++)
             scanf("%d",g[i]+j);
+}
+```
+
+
+
+<span id="19"><h4>19. 最小费用最大流（逐步炒菜）</h4></span>
+```cpp
+int s,t;
+
+struct Edge
+{
+    int from,to;
+    long long cap,flow,cost;
+    Edge(int u,int v,int ca,int f,int co):from(u),to(v),cap(ca),flow(f),cost(co){};
+};
+int sum=0;
+int T[105][105];
+struct MCMF {
+    int nn,mm,s,t;
+    vector<Edge> edges;
+    vector<int> G[MAXN];
+    int inq[MAXN];//是否在队列中
+    long long d[MAXN];//距离
+    long long p[MAXN];//上一条弧
+    long long a[MAXN];//可改进量
+//
+    struct rec{
+        long long flow,cost,percost;
+    };
+    vector<rec> r;//增广路
+    void init(int n) {
+        this->nn = n;
+//        for(int i = 0; i <= n; i++) G[i].clear();
+//        edges.clear();
+//        r.clear();
+//        r.push_back({0,0,0});
+    }
+    void add_edge(int from,int to, int cap,int cost) {
+        edges.push_back((Edge){from,to,cap,0,cost});
+        edges.push_back((Edge){to,from,0,0,-cost});
+        mm = edges.size();
+        G[from].push_back(mm-2);
+        G[to].push_back(mm-1);
+    }
+    int pre[MAXN];
+    bool spfa(int s,int t,long long &flow,long long &cost) {
+        for(int i = 0; i <= nn; i++) d[i] = INF;
+        for(int i = 0; i <= nn; i++) inq[i] = 0;
+        d[s] = 0; inq[s] = 1; p[s] = 0; a[s] = INF;
+        queue<int> Q;
+        Q.push(s);
+        while(!Q.empty()) {
+            int u = Q.front(); Q.pop();
+            inq[u] = 0;
+            for(int i = 0; i < G[u].size(); i++) {
+                Edge & e = edges[G[u][i]];
+                if(e.cap > e.flow && d[e.to] > d[u] + e.cost) {
+                    d[e.to] = d[u] + e.cost;
+                    p[e.to] = G[u][i];
+                    a[e.to] = min(a[u], e.cap - e.flow);
+                    /*记录返回*/
+                    pre[e.to]=G[u][i];
+
+                    if(!inq[e.to]) {Q.push(e.to); inq[e.to] = 1;}
+                }
+            }
+        }
+        if(d[t] == INF) return false;
+        flow += a[t];
+        cost += d[t] * a[t];
+//        r.push_back({flow,cost,d[t]});
+        int u = t;
+        while(u != s) {
+            edges[p[u]].flow += a[t];
+            edges[p[u]^1].flow -= a[t];
+            u = edges[p[u]].from;
+        }
+        return true;
+    }
+    int layer[MAXN];
+    long long Mincost(int s,int t) {
+        long long cost = 0;
+        long long flow=0;
+        while(spfa(s,t,flow,cost)){
+            /**由于我们跑一次spfa只能找出一次增广路，
+            所以我们可以暂时不连不需要的边。
+            一开始，我们把所有厨师做倒数第１道菜与所有菜连好，
+            然后找一条增广路，这条增广路上一定经过了一个点，
+            表示第j个厨师做倒数第１道菜，于是我们添加点
+            （第j个厨师做倒数第２道菜），与汇点和所有菜连边，
+            以此类推。**/
+            int from=edges[pre[t]].from;
+            from=(from-n-1)/sum+1;
+            layer[from]++;
+            if(layer[from]>sum)continue;
+            for(int k=1;k<=n;k++){
+                add_edge(k,n+(from-1)*sum+layer[from],1,T[k][from]*layer[from]);
+            }
+        }
+        return cost;
+    }
+} mcmf;
+int p[105];
+void solve(){
+    printf("%lld\n",mcmf.Mincost(s,t));
+}
+void init(){
+    scanf("%d%d",&n,&m);
+    for(int i=1;i<=n;i++){
+        scanf("%d",p+i);
+        sum+=p[i];
+    }
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            scanf("%d",T[i]+j);
+        }
+    }
+    s=(m+1)*sum+5;t=s+1;
+    mcmf.init(t);
+    for(int i=1;i<=n;i++)
+        mcmf.add_edge(s,i,p[i],0);
+    for(int j=1;j<=m;j++)
+        for(int i=1;i<=sum;i++)
+            mcmf.add_edge(n+(j-1)*sum+i,t,1,0);
+    for(int j=1;j<=m;j++){
+        for(int k=1;k<=n;k++){
+            mcmf.add_edge(k,n+(j-1)*sum+1,1,T[k][j]*1);
+        }
+    }
+    for(int i=1;i<=m;i++)
+        mcmf.layer[i]=1;
 }
 ```
