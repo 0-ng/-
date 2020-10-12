@@ -691,53 +691,47 @@ int main(){
 
 <span id="12"><h4>12. 判断大素数</h4></span>
 ```cpp
-typedef long long LL;
- 
-LL mulmod( LL a, LL b , LL p )
-{
-    LL  d =1;
-    a = a%p;
-    while( b>0 )
-    {
-        if(b&1)
-            d = (d*a)%p;
-        a = (a*a)%p;
-        b>>=1;
+/*枚举两个奇数加数，直接套用米勒罗宾素数测试方法模板判断是否是素数。模板地址在另一个博客里。*/
+typedef unsigned long long ull;
+typedef unsigned long long ULL;
+
+ULL prime[6] = {2, 3, 5, 233, 331};
+ULL qmul(ULL x, ULL y, ULL mod) { // 乘法防止溢出， 如果p * p不爆LL的话可以直接乘； O(1)乘法或者转化成二进制加法
+    return (x * y - (long long)(x / (long double)mod * y + 1e-3) *mod + mod) % mod;
+    /*
+    LL ret = 0;
+    while(y) {
+        if(y & 1)
+            ret = (ret + x) % mod;
+        x = x * 2 % mod;
+        y >>= 1;
     }
-    return d;
+    return ret;
+    */
 }
- 
-bool witness( LL a,LL n)
-{
-    LL d = n-1 ;
-    if( n ==2 ) return true ;
-    if( !(n&1) ) return false ;
-    while(!(d&1)) d = d/2;
-    LL t = mulmod(a,d,n);
-    while((d!=n-1) && (t!=1)&&(t!=n-1))
-    {
-        t = mulmod( t ,2,n);
-        d=d<<1;
+ULL ksm(ULL a, ULL n, ULL mod) {
+    ULL ret = 1;
+    while(n) {
+        if(n & 1) ret = qmul(ret, a, mod);
+        a = qmul(a, a, mod);
+        n >>= 1;
     }
-    return (t==n-1)||(d&1);
+    return ret;
 }
- 
-bool isprime( LL n)
-{
-    int a[3] = {2,7,61};
-    for(int i=0;i<3;i++)
-        if(!witness(a[i],n))
-            return false;
-    return true;
-}
-int main()
-{
-    LL s;
-    cin>>s;
-    if(isprime(s))
-        cout<<"YES";
-    else
-        cout<<"NO";
-    return 0;
+bool Miller_Rabin(ULL p) {
+    if(p < 2) return 0;
+    if(p != 2 && p % 2 == 0) return 0;
+    ULL s = p - 1;
+    while(! (s & 1)) s >>= 1;
+    for(int i = 0; i < 5; ++i) {
+        if(p == prime[i]) return 1;
+        ULL t = s, m = ksm(prime[i], s, p);
+        while(t != p - 1 && m != 1 && m != p - 1) {
+            m = qmul(m, m, p);
+            t <<= 1;
+        }
+        if(m != p - 1 && !(t & 1)) return 0;
+    }
+    return 1;
 }
 ```
