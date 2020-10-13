@@ -687,6 +687,73 @@ int main(){
     printf("\n");
     return 0 ;
 }
+-----------------------------------------
+
+-------------------------------------
+/*
+1 2
+1 2
+1 2 1
+*/
+/*
+1 4 5 2
+*/
+const double PI=acos(-1.0);
+struct Complex{
+    double x,y;
+    Complex(double _x=0.0,double _y=0.0){
+        x=_x;y=_y;
+    }
+    Complex operator-(const Complex &b)const{
+        return Complex(x-b.x,y-b.y);
+    }
+    Complex operator+(const Complex &b)const{
+        return Complex(x+b.x,y+b.y);
+    }
+    Complex operator*(const Complex &b)const{
+        return Complex(x*b.x-y*b.y,x*b.y+y*b.x);
+    }
+}a[MAXN],b[MAXN];
+int N,M;
+int l,r[MAXN];
+void fast_fast_tle(Complex *A,int limit,int type)
+{
+    for(int i=0;i<limit;i++)
+        if(i<r[i]) swap(A[i],A[r[i]]);//求出要迭代的序列
+    for(int mid=1;mid<limit;mid<<=1)//待合并区间的中点
+    {
+        Complex Wn( cos(PI/mid) , type*sin(PI/mid) ); //单位根
+        for(int R=mid<<1,j=0;j<limit;j+=R)//R是区间的右端点，j表示前已经到哪个位置了
+        {
+            Complex w(1,0);//幂
+            for(int k=0;k<mid;k++,w=w*Wn)//枚举左半部分
+            {
+                 Complex x=A[j+k],y=w*A[j+mid+k];//蝴蝶效应
+                A[j+k]=x+y;
+                A[j+mid+k]=x-y;
+            }
+        }
+    }
+}
+int main()
+{
+    scanf("%d%d",&N,&M);
+    for(int i=0;i<=N;i++) scanf("%lf",&a[i].x);
+    for(int i=0;i<=M;i++) scanf("%lf",&b[i].x);
+    int limit=1;
+    while(limit<=N+M) limit<<=1,l++;
+    for(int i=0;i<limit;i++)
+        r[i]= ( r[i>>1]>>1 )| ( (i&1)<<(l-1) ) ;
+    // 在原序列中 i 与 i/2 的关系是 ： i可以看做是i/2的二进制上的每一位左移一位得来
+    // 那么在反转后的数组中就需要右移一位，同时特殊处理一下复数
+    fast_fast_tle(a,limit,1);
+    fast_fast_tle(b,limit,1);
+    for(int i=0;i<=limit;i++) a[i]=a[i]*b[i];
+    fast_fast_tle(a,limit,-1);
+    for(int i=0;i<=N+M;i++)
+        printf("%d ",(int)(a[i].x/limit+0.5));
+    return 0;
+}
 ```
 
 <span id="12"><h4>12. 判断大素数</h4></span>
