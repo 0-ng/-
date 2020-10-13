@@ -1,8 +1,9 @@
 struct Matrix {
     int m, n;
-    long long A[410][410];
-    long long A_inv[410][410];
-    Matrix(){}
+    long long A[MAXN][MAXN];
+    long long A_inv[MAXN][MAXN];
+    double yuedan_A[MAXN][MAXN];
+    Matrix() {}
     Matrix(int _n, int _m) {
         n = _n;
         m = _m;
@@ -12,10 +13,16 @@ struct Matrix {
         n = _n;
         m = _m;
     }
-    void read(){
-        for(int i=1;i<=n;i++)
-            for(int j=1;j<=m;j++)
-                scanf("%lld",A[i]+j);
+    void read(bool yuedan=false) {
+        if(yuedan){
+            for(int i=1,tmp; i<=n; i++)
+                for(int j=1; j<=n+1; j++)
+                    scanf("%lf",yuedan_A[i]+j);
+        }else{
+            for(int i=1; i<=n; i++)
+                for(int j=1; j<=m; j++)
+                    scanf("%lld",A[i]+j);
+        }
     }
     Matrix operator+(const Matrix mat) const {
         Matrix ans{n, m};
@@ -65,12 +72,12 @@ struct Matrix {
 
     bool Gauss() {
         memarray(A_inv, 0);
-        for(int i=1;i<=n;i++)
+        for(int i=1; i<=n; i++)
             A_inv[i][i]=1;
         for (int i = 1; i <= n; i++) {
             for (int j = i; j <= n; j++) {
                 if (A[j][i]) {
-                    for (int k = 1; k <= n&& !A[i][i]; k++){
+                    for (int k = 1; k <= n&& !A[i][i]; k++) {
                         swap(A[i][k], A[j][k]);
                         swap(A_inv[i][k], A_inv[j][k]);
                     }
@@ -89,10 +96,10 @@ struct Matrix {
             for (int j = 1; j <= n; j++) {
                 if (j != i) {
                     long long m = A[j][i];
-                    for (int k = i; k <= n; k++){
+                    for (int k = i; k <= n; k++) {
                         A[j][k] = (A[j][k] - m * A[i][k] % mod + mod) % mod;
                     }
-                    for (int k = 1; k <= n; k++){
+                    for (int k = 1; k <= n; k++) {
                         A_inv[j][k] = (A_inv[j][k] - m * A_inv[i][k] % mod + mod) % mod;
                     }
                 }
@@ -139,18 +146,61 @@ struct Matrix {
         return ans;
     }
 
-    void inv_print(){
-        for(int i=1;i<=n;i++){
-            for(int j=1;j<n;j++)
+    void inv_print() {
+        for(int i=1; i<=n; i++) {
+            for(int j=1; j<n; j++)
                 printf("%lld ",A_inv[i][j]);
             printf("%lld\n",A_inv[i][n]);
         }
     }
-    void print(){
-        for(int i=1;i<=n;i++){
-            for(int j=1;j<n;j++)
+    void print() {
+        for(int i=1; i<=n; i++) {
+            for(int j=1; j<n; j++)
                 printf("%lld ",A[i][j]);
             printf("%lld\n",A[i][n]);
         }
     }
-}matrix;
+
+    /*高斯约旦消元法
+        a1x+a2x+a3x=y1
+        b1x+b2x+b3x=y2
+        c1x+c2x+c3x=y3
+    */
+    bool yuedan() {
+        for(int i=1; i<=n; ++i) { //枚举列（项）
+            int mx=i;
+            for(int j=i+1; j<=n; ++j) { //选出该列最大系数
+                if(fabs(yuedan_A[j][i])>fabs(yuedan_A[mx][i])){//fabs是取浮点数的绝对值的函数
+                    mx=j;
+                }
+            }
+            for(int j=1; j<=n+1; ++j) { //交换
+                swap(yuedan_A[i][j],yuedan_A[mx][j]);
+            }
+            if(yuedan_A[i][i]==0) { //最大值等于0则说明该列都为0，肯定无解
+                puts("No Solution");
+                return 0;
+            }
+            for(int j=1; j<=n; ++j) { //每一项都减去一个数（就是小学加减消元）
+                if(j!=i) {
+                    double temp=yuedan_A[j][i]/yuedan_A[i][i];
+                    for(int k=i+1; k<=n+1; ++k) {
+                        yuedan_A[j][k]-=yuedan_A[i][k]*temp;
+                        //a[j][k]-=a[j][i]*a[i][k]/a[i][i];
+                    }
+                }
+            }
+        }
+        //上述操作结束后，矩阵会变成这样
+        /*
+        k1*a=e1
+        k2*b=e2
+        k3*c=e3
+        k4*d=e4
+        */
+        //所以输出的结果要记得除以该项系数，消去常数
+        for(int i=1; i<=n; ++i) {
+            printf("%.2f\n",yuedan_A[i][n+1]/yuedan_A[i][i]);
+        }
+    }
+} matrix;
