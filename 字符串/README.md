@@ -1,6 +1,7 @@
 
 ### [1.	KMP](#1)
 ### [2.	马拉车](#2)
+### [3.	AC自动机](#3)
 
 <span id="1"><h4>1.	KMP</h4></span>
 ```cpp
@@ -77,5 +78,67 @@ void solve(){
     int ans = Manacher(total);
     printf("%d\n",n-ans);
 
+}
+```
+
+
+<span id="3"><h4>3.	AC自动机</h4></span>
+```cpp
+struct Aho_Corasick_Automaton{
+    int c[MAXN][26],val[MAXN],fail[MAXN],cnt;
+    void ins(char *s){
+        int len=strlen(s);int now=0;
+        for(int i=0;i<len;i++){
+            int v=s[i]-'a';
+            if(!c[now][v])
+                c[now][v]=++cnt;
+            now=c[now][v];
+        }
+        val[now]++;
+    }
+    void build(){
+        queue<int>q;
+        for(int i=0;i<26;i++){
+            if(c[0][i]){
+                fail[c[0][i]]=0;
+                q.push(c[0][i]);
+            }
+        }
+        while(!q.empty()){
+            int u=q.front();q.pop();
+            for(int i=0;i<26;i++){
+                if(c[u][i]){
+                    fail[c[u][i]]=c[fail[u]][i];
+                    q.push(c[u][i]);
+                }else{
+                    c[u][i]=c[fail[u]][i];
+                }
+            }
+        }
+    }
+    int query(char *s){
+        int len=strlen(s);
+        int now=0,ans=0;
+        for(int i=0;i<len;i++){
+            now=c[now][s[i]-'a'];
+            for(int t=now;t&&~val[t];t=fail[t]){
+                ans+=val[t];
+                val[t]=-1;
+            }
+        }
+        return ans;
+    }
+}AC;
+char p[MAXN];
+void solve() {
+    int ans=AC.query(p);
+    printf("%d\n",ans);
+}
+void init() {
+    scanf("%d",&n);
+    for(int i=1;i<=n;i++)
+        scanf("%s",p),AC.ins(p);
+    AC.build();
+    scanf("%s",p);
 }
 ```
