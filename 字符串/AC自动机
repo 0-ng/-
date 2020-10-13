@@ -1,169 +1,57 @@
-struct AC_Automation{//MAX_N?????Tire?????
-    int nxt[MAX_N][26],ed[MAX_N],fail[MAX_N];//fail??????????
-    int root,L;
-    int new_node()
-    {  
-        ed[++L]=0;
-        repi(i,0,25)    nxt[L][i]=-1;
-        return L;//1?????(??)
-    }
-    void init()
-    {
-        L=0;
-        root=new_node();
-    }
-    void insert(char *s,int val)
-    {
-        int len=strlen(s+1);
-        int now=root;
-        repi(i,1,len){
-            if(nxt[now][s[i]-'a']==-1)  nxt[now][s[i]-'a']=new_node();
-            now=nxt[now][s[i]-'a'];    
+struct Aho_Corasick_Automaton{
+    int c[MAXN][26],val[MAXN],fail[MAXN],cnt;
+    void ins(char *s){
+        int len=strlen(s);int now=0;
+        for(int i=0;i<len;i++){
+            int v=s[i]-'a';
+            if(!c[now][v])
+                c[now][v]=++cnt;
+            now=c[now][v];
         }
-        ed[now]+=val;
+        val[now]++;
     }
-    void get_fail()
-    {
-        queue<int> Q;
-        fail[root]=root;
-        repi(i,0,25){
-            if(nxt[root][i]==-1)    nxt[root][i]=root;
-            else{
-                fail[nxt[root][i]]=root;
-                Q.push(nxt[root][i]);
-            }
-        }
-        while(!Q.empty())
-        {
-            int now=Q.front();
-            Q.pop();
-            repi(i,0,25){
-                if(nxt[now][i]==-1) nxt[now][i]=nxt[fail[now]][i];
-                else{
-                    fail[nxt[now][i]]=nxt[fail[now]][i];
-                    Q.push(nxt[now][i]);
-                    ed[nxt[now][i]]+=ed[fail[nxt[now][i]]];
-                }
-            }
-        }
-    }
-}ac;
-
-
-namespace ACM {
-    const int maxn=3007;
-    int next[maxn][26],fail[maxn],len[maxn],tot;
-    int sum[maxn]; //more
-    void init() {
-        tot=0; len[0]=0; fail[0]=0;
-        memset(next[0],0,sizeof(next[0]));
-    }
-    void insert(char s[],int val) {
-        int i,n=strlen(s),p=0;
-        REP(i,n) {
-            int c=s[i]-'a';
-            if (!next[p][c]) {
-                next[p][c]=++tot; len[tot]=len[p]+1; fail[tot]=0;
-                memset(next[tot],0,sizeof(next[tot]));
-            } p=next[p][c];
-        } sum[p]+=val;
-    }
-    int Q[maxn],ST,ED;
-    void buildAC() {
-        ST=0; ED=-1; Q[++ED]=0;
-        while (ST<=ED) {
-            int p=Q[ST++],c;
-            REP(c,26) {
-                if (next[p][c]) {
-                    fail[next[p][c]]=p?next[fail[p]][c]:0;
-                    Q[++ED]=next[p][c];
-                } else next[p][c]=p?next[fail[p]][c]:0;//否则可能fail=self
-            } sum[p]+=sum[fail[p]];
-        }
-    }
-}
-
-
-struct acam
-{
-    int tree[maxn][26];
-    int fail[maxn];
-    int val[maxn];
-    int tot;
-    void Insert(char *s,int v){
-        int root = 0;
-        for(int i = 0;s[i];++i){
-            if(!tree[root][s[i]-'a'])tree[root][s[i]-'a'] = ++tot;
-            root = tree[root][s[i]-'a'];
-        }
-        val[root]+=v;
-    }
-    void get_fail(){
+    void build(){
         queue<int>q;
-        for(int i = 0;i < 26;++i){
-            if(tree[0][i])q.push(tree[0][i]);
+        for(int i=0;i<26;i++){
+            if(c[0][i]){
+                fail[c[0][i]]=0;
+                q.push(c[0][i]);
+            }
         }
         while(!q.empty()){
-            int now = q.front();
-            q.pop();
-            val[now] += val[fail[now]];
-            for(int i = 0;i < 26;++i){
-                if(tree[now][i]){
-                    fail[tree[now][i]] = tree[fail[now]][i];
-                    q.push(tree[now][i]);
-                }
-                else tree[now][i] = tree[fail[now]][i];
-            }
-        }
-    }
- 
-}ac;
-
-
-struct ACautomaton{
-    struct node{
-        int son[26], tag, fail;
-    }trie[5000];
-    int id, num[5000];
-    void insert(char s[], int k){
-        int u = 0, n = strlen(s);
-        for(int i = 0; i < n; ++i){
-            int& v = trie[u].son[s[i] - 'a'];
-            if(v == 0) v = ++id;
-            u = v;
-        }
-        trie[u].tag += k;
-    }
-    void getFail(){
-        queue<int > que;
-        for(int i = 0; i < 26; ++i){
-            int v = trie[0].son[i];
-            if(v) que.push(v);
-        }
-        while (que.size()){
-            int now = que.front(), Fail = trie[now].fail; que.pop();
-            for(int i = 0; i < 26; ++i){
-                int &v = trie[now].son[i];
-                if(v){
-                    trie[v].fail = trie[Fail].son[i];
-                    que.push(v);
-                }
-                else{
-                    v = trie[Fail].son[i];
+            int u=q.front();q.pop();
+            for(int i=0;i<26;i++){
+                if(c[u][i]){
+                    fail[c[u][i]]=c[fail[u]][i];
+                    q.push(c[u][i]);
+                }else{
+                    c[u][i]=c[fail[u]][i];
                 }
             }
         }
-        for(int i = 1; i <= id; ++i){
-            int rec = 0, u = i;
-            while (u){
-                rec += trie[u].tag;
-                u = trie[u].fail;
+    }
+    int query(char *s){
+        int len=strlen(s);
+        int now=0,ans=0;
+        for(int i=0;i<len;i++){
+            now=c[now][s[i]-'a'];
+            for(int t=now;t&&~val[t];t=fail[t]){
+                ans+=val[t];
+                val[t]=-1;
             }
-            num[i] = rec;
         }
+        return ans;
     }
-    int getSon(int k, int i){
-        return trie[k].son[i];
-    }
-}Acam;
- 
+}AC;
+char p[MAXN];
+void solve() {
+    int ans=AC.query(p);
+    printf("%d\n",ans);
+}
+void init() {
+    scanf("%d",&n);
+    for(int i=1;i<=n;i++)
+        scanf("%s",p),AC.ins(p);
+    AC.build();
+    scanf("%s",p);
+}
