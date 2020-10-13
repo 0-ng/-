@@ -233,6 +233,42 @@ template<class T> bool Solve_equation(T a,T b,T c,T &x,T& y){
     //y=(y%yplus+yplus)%yplus;x=c-b*y; //y的最小正整数解
     return true;
 }
+
+----------------------------
+//求解二元一次方程 a*x+b*y=c,一组解为x,y,无解则返回false
+template<class T> bool Solve_equation(T a,T b,T c,T &x,T& y,T &num,int flag=0){
+    if(a==0||b==0){//我也不知道输出什么
+        return false;
+    }
+    T gcd;
+    exgcd(a,b,gcd,x,y);
+    if(c%gcd) return false;   //无解
+    T k=c/gcd;
+    x*=k;y*=k;
+    T xplus=b/gcd,yplus=a/gcd;
+    if(xplus<0) xplus*=-1;if(yplus<0) yplus*=-1;
+    //此时求出的x,y即为一组解，该方程的通解形式为X=x+t*(b/gcd),Y=y-t*(a/gcd) t为任意正整数
+    //根据题目要求我们需要构造特殊解
+    if(flag==1){
+        x=(x%xplus+xplus)%xplus;
+        if(x==0)x=xplus;
+        y=(c-a*x)/b; //x的最小正整数解
+
+        //xy正整数解的数量,y减小到1的数量
+        T q=a/gcd;
+        num=(y-1)/q+1;
+    }
+    if(flag==2){
+        y=(y%yplus+yplus)%yplus;
+        if(y==0)y=yplus;
+        x=(c-b*y)/a; //y的最小正整数解
+
+        //xy正整数解的数量,x减小到1的数量
+        T q=b/gcd;
+        num=(x-1)/q+1;
+    }
+    return true;
+}
 ```
 <span id="6"><h4>6.	矩阵</h4></span>
 ```cpp
