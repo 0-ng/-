@@ -11,6 +11,7 @@
 ### [10. min25求前n素数和](#10)
 ### [11. FFT](#11)
 ### [12. 判断大素数](#12)
+### [13. 线性基](#13)
 
 
 <span id="1"><h4>1. 大素数模板</h4></span>
@@ -900,5 +901,35 @@ bool Miller_Rabin(ULL p) {
         if(m != p - 1 && !(t & 1)) return 0;
     }
     return 1;
+}
+```
+
+<span id="13"><h4>13. 线性基</h4></span>
+```cpp
+long long d[65];
+void add(long long x) {
+    for(int i=60; i>=0; i--) {
+        if(x&(1ll<<i)) { //注意，如果i大于31，前面的1的后面一定要加ll
+            if(d[i])x^=d[i];
+            else {
+                d[i]=x;
+                break;//插入成功就退出
+            }
+        }
+    }
+}
+void solve() {
+    long long sum=0;
+    for(int i=55;i>=0;i--)
+        sum=max(sum,sum^d[i]);
+    printf("%lld\n",sum);
+}
+long long a[55];
+void init() {
+    scanf("%d",&n);
+    for(int i=1;i<=n;i++){
+        scanf("%lld",a+i);
+        add(a[i]);
+    }
 }
 ```
