@@ -932,4 +932,91 @@ void init() {
         add(a[i]);
     }
 }
+
+
+
+------------------------线性基合并树上两点间异或最大
+int n,m;
+void merge1(long long *a,long long b){
+    for(int i=60;i>=0;i--){
+        if(b&(1LL<<i)){
+            if(a[i])b^=a[i];
+            else{
+                a[i]=b;
+                return;
+            }
+        }
+    }
+}
+void merge2(long long *a,long long *b){
+    for(int i=60;i>=0;i--)
+        if(b[i])merge1(a,b[i]);
+}
+vector<int>vec[MAXN];
+int depth[MAXN],fa[MAXN][22];
+void dfs(int now,int pre){
+    for(auto to:vec[now]){
+        if(to==pre)continue;
+        depth[to]=depth[now]+1;
+        fa[to][0]=now;
+        dfs(to,now);
+    }
+}
+long long F[MAXN][22][65];
+long long ans[65];
+void LCA(int x,int y){
+    if(depth[y]<depth[x])swap(x,y);
+    for(int i=20;i>=0;i--){
+        if(depth[x]<=depth[fa[y][i]]){
+            merge2(ans,F[y][i]);
+            y=fa[y][i];
+        }
+    }
+    if(x==y){
+        merge2(ans,F[x][0]);
+        return;
+    }
+    for(int i=20;i>=0;i--){
+        if(fa[x][i]!=fa[y][i]){
+            merge2(ans,F[x][i]);
+            merge2(ans,F[y][i]);
+            x=fa[x][i];
+            y=fa[y][i];
+        }
+    }
+    merge2(ans,F[x][0]);
+    merge2(ans,F[y][0]);
+    merge2(ans,F[fa[x][0]][0]);
+}
+void solve() {
+    dfs(1,0);
+    for(int i=1;i<=20;i++)
+        for(int j=1;j<=n;j++){
+            fa[j][i]=fa[fa[j][i-1]][i-1];
+            memcpy(F[j][i],F[j][i-1],sizeof(F[j][i]));
+            merge2(F[j][i],F[fa[j][i-1]][i-1]);
+        }
+    int u,v;
+    while(m--){
+        memarray(ans,0);
+        scanf("%d%d",&u,&v);
+        LCA(u,v);
+        long long sum=0;
+        for(int i=60;i>=0;i--)
+            sum=max(sum,sum^ans[i]);
+        printf("%lld\n",sum);
+    }
+}
+void init() {
+    scanf("%d%d",&n,&m);
+    long long a;
+    for(int i=1;i<=n;i++){
+        scanf("%lld",&a);
+        merge1(F[i][0],a);
+    }
+    for(int i=1,u,v;i<n;i++){
+        scanf("%d%d",&u,&v);
+        vec[u].pb(v);vec[v].pb(u);
+    }
+}
 ```
