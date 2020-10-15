@@ -12,7 +12,7 @@
 ### [11. FFT](#11)
 ### [12. 判断大素数](#12)
 ### [13. 线性基](#13)
-
+### [14. 康托展开逆展开](#14)
 
 <span id="1"><h4>1. 大素数模板</h4></span>
 ```cpp
@@ -1018,5 +1018,56 @@ void init() {
         scanf("%d%d",&u,&v);
         vec[u].pb(v);vec[v].pb(u);
     }
+}
+```
+
+<span id="14"><h4>14. 康托展开逆展开</h4></span>
+```cpp
+int f[11],a[11];
+char ka[11];
+vector<int>v;
+
+inline int cantor()
+{
+	int ret=0,x;
+	for(int i=1; i<=n; ++i) {
+		x=0;
+		for(int j=i+1; j<=n; ++j)
+		if( (ka[i]-ka[j])>0 ) x++;
+		ret+=x*f[n-i];
+	}
+	return ret;
+}
+
+inline void incantor(int k)
+{
+	int x;
+	for(int i=1; i<=n; ++i)
+        v.push_back(i);
+	for(int i=1; i<n; ++i) {
+		a[i]=v[(x=k/f[n-i])];
+		v.erase(v.begin()+x);
+		k%=f[n-i];
+	}
+	a[n]=v[0];
+}
+void solve(){
+	f[1]=1;
+	for(int i=2; i<=10; ++i)
+        f[i]=f[i-1]*i;
+    int tmp=cantor()-1;
+//    printf("%d\n",tmp);
+    if(tmp<0){
+        printf("ERROR\n");
+        return;
+    }
+	incantor(tmp);
+	for(int i=1; i<=n; ++i)
+        printf("%d ",a[i]);
+}
+void init(){
+    scanf("%d",&n);
+	for(int i=1; i<=n; ++i)
+        scanf("%d",ka+i);
 }
 ```
