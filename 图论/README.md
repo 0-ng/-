@@ -21,6 +21,7 @@
 ### [18. 二分图的最佳完美匹配KM算法](#18)
 ### [19. 最小费用最大流（逐步炒菜）](#19)
 ### [20. 志愿者代价](#20)
+### [21. 线段树建图1到多 多到1 1到1](#21)
 
 <span id="0"><h4>0. 性质</h4></span>
 树的重心性质：
@@ -1435,4 +1436,100 @@ for(int i=1,l,r,w;i<=m;i++){
 }
 mcmf.add_edge(s,1,INF,0);
 mcmf.add_edge(n+1,t,INF,0);
+```
+
+<span id="21"><h4>21. 线段树建图1到多 多到1 1到1</h4></span>
+```cpp
+int cnt;
+int treeOut[MAXN],treeIn[MAXN];
+struct Edge{
+    int to;
+    long long w;
+    bool operator<(Edge e)const{
+        return w>e.w;
+    }
+};
+vector<Edge>vec[MAXN];
+int s;
+void build(int l,int r,int rt){
+    if(l==r){
+        treeOut[rt]=l;
+        treeIn[rt]=l;
+        return;
+    }
+    int mid=(l+r)>>1;
+    build(l,mid,rt<<1);
+    build(mid+1,r,rt<<1|1);
+    treeOut[rt]=++cnt;
+    treeIn[rt]=++cnt;
+    vec[treeOut[rt<<1]].pb({treeOut[rt],0});
+    vec[treeOut[rt<<1|1]].pb({treeOut[rt],0});
+    vec[treeIn[rt]].pb({treeIn[rt<<1],0});
+    vec[treeIn[rt]].pb({treeIn[rt<<1|1],0});
+}
+void updateOneToMany(int l,int r,int L,int R,int rt,int from,long long w){
+    if(L<=l&&R>=r){
+        vec[from].pb({treeIn[rt],w});
+        return;
+    }
+    int mid=(l+r)>>1;
+    if(L<=mid)updateOneToMany(l,mid,L,R,rt<<1,from,w);
+    if(R>mid)updateOneToMany(mid+1,r,L,R,rt<<1|1,from,w);
+}
+void updateManyToOne(int l,int r,int L,int R,int rt,int to,long long w){
+    if(L<=l&&R>=r){
+        vec[treeOut[rt]].pb({to,w});
+        return;
+    }
+    int mid=(l+r)>>1;
+    if(L<=mid)updateManyToOne(l,mid,L,R,rt<<1,to,w);
+    if(R>mid)updateManyToOne(mid+1,r,L,R,rt<<1|1,to,w);
+}
+long long dis[MAXN];
+bool vis[MAXN];
+void dij(){
+    memarray(dis,INF);
+    dis[s]=0;
+    priority_queue<Edge>q;
+    q.push({s,0});
+    while(!q.empty()){
+        Edge e=q.top();q.pop();
+        int now=e.to;
+        vis[now]=true;
+        for(auto edge:vec[now]){
+            int to=edge.to;
+            if(dis[to]>dis[now]+edge.w){
+                dis[to]=dis[now]+edge.w;
+                q.push({to,dis[to]});
+            }
+        }
+    }
+}
+void solve(){
+    dij();
+    for(int i=1;i<=n;i++){
+        if(dis[i]>1e16)dis[i]=-1;
+        printf("%lld ",dis[i]);
+    }
+    printf("\n");
+}
+void init(){
+    scanf("%d%d%d",&n,&m,&s);
+    cnt=n;
+    build(1,n,1);
+    int ty,u,v,w,l,r;
+    while(m--){
+        scanf("%d",&ty);
+        if(ty==1){
+            scanf("%d%d%d",&u,&v,&w);
+            vec[u].pb({v,w});
+        }else if(ty==2){
+            scanf("%d%d%d%d",&u,&l,&r,&w);
+            updateOneToMany(1,n,l,r,1,u,w);
+        }else{
+            scanf("%d%d%d%d",&u,&l,&r,&w);
+            updateManyToOne(1,n,l,r,1,u,w);
+        }
+    }
+}
 ```
