@@ -5,6 +5,7 @@
 ### [4. 线段树](#4)
 ### [5. 线段树区间最大最小单点修改](#5)
 ### [6. 树状数组](#6)
+### [7. 二维树状数组求矩阵异或](#7)
 
 <span id="1"><h4>1.	RMQ</h4></span>
 ```cpp
@@ -501,4 +502,47 @@ struct BIT{//区间修改区间查询
     int sum = getsum(y) - getsum(x-1);
      */
 };
+```
+
+<span id="7"><h4>7.	二维树状数组求矩阵异或</h4></span>
+//初始全0，区间修改区间查询
+```cpp
+long long tree[2][2][MAXN][MAXN];
+int lowbit(int x){return x&-x;}
+void add(int x,int y,long long v){
+    for(int i=x;i<=n;i+=lowbit(i))
+        for(int j=y;j<=n;j+=lowbit(j))
+            tree[x&1][y&1][i][j]^=v;
+}
+long long sum(int x,int y){
+    long long ret=0;
+    for(int i=x;i>0;i-=lowbit(i))
+        for(int j=y;j>0;j-=lowbit(j))
+            ret^=tree[x&1][y&1][i][j];
+    return ret;
+}
+void solve(){
+    int ty,x_2,y_2,x_1,y_1;
+    long long v;
+    while(m--){
+        scanf("%d%d%d%d%d",&ty,&x_1,&y_1,&x_2,&y_2);
+        if(ty==1){
+            long long ans=0;
+            ans^=sum(x_2,y_2);
+            ans^=sum(x_1-1,y_2);
+            ans^=sum(x_2,y_1-1);
+            ans^=sum(x_1-1,y_1-1);
+            printf("%lld\n",ans);
+        }else{
+            scanf("%lld",&v);
+            add(x_2+1,y_2+1,v);
+            add(x_1,y_2+1,v);
+            add(x_2+1,y_1,v);
+            add(x_1,y_1,v);
+        }
+    }
+}
+void init(){
+    scanf("%d%d",&n,&m);
+}
 ```
