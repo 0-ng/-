@@ -396,8 +396,10 @@ int qurrymax(int x, int y, int l, int r, int rt) {
     }
     int mid = (l + r)>>1;
     int ret = -1e9;
-    if (x <= mid) ret = max(ret, qurrymax(x, y, l, mid, rt<<1));//如果这个区间的左儿子和目标区间有交集那么搜索左儿子
-    if (y > mid) ret = max(ret, qurrymax(x, y, mid + 1, r, rt<<1|1));//如果这个区间的右儿子和目标区间有交集那么搜索右儿子
+    if (x <= mid) ret = max(ret, qurrymax(x, y, l, mid, rt<<1));
+    //如果这个区间的左儿子和目标区间有交集那么搜索左儿子
+    if (y > mid) ret = max(ret, qurrymax(x, y, mid + 1, r, rt<<1|1));
+    //如果这个区间的右儿子和目标区间有交集那么搜索右儿子
     return ret;
 }
 int qurrymin(int x, int y, int l, int r, int rt) {
@@ -406,8 +408,10 @@ int qurrymin(int x, int y, int l, int r, int rt) {
     }
     int mid = (l + r)>>1;
     int ret=1e9;
-    if (x <= mid) ret = min(ret, qurrymin(x, y, l, mid, rt<<1));//如果这个区间的左儿子和目标区间有交集那么搜索左儿子
-    if (y > mid) ret = min(ret, qurrymin(x, y, mid + 1, r, rt<<1|1));//如果这个区间的右儿子和目标区间有交集那么搜索右儿子
+    if (x <= mid) ret = min(ret, qurrymin(x, y, l, mid, rt<<1));
+    //如果这个区间的左儿子和目标区间有交集那么搜索左儿子
+    if (y > mid) ret = min(ret, qurrymin(x, y, mid + 1, r, rt<<1|1));
+    //如果这个区间的右儿子和目标区间有交集那么搜索右儿子
     return ret;
 }
 void update(int x, int c, int l, int r, int rt) {
