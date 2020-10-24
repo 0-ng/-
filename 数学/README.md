@@ -81,7 +81,8 @@ void init()
     for(int i = 1; i <= M; ++i)
     {
         sz[i] = prime[i] * sz[i - 1];
-        for(int j = 1; j <= PM; ++j) phi[j][i] = phi[j][i - 1] - phi[j / prime[i]][i - 1];
+        for(int j = 1; j <= PM; ++j) 
+		phi[j][i] = phi[j][i - 1] - phi[j / prime[i]][i - 1];
     }
 }
 int sqrt2(LL x)
@@ -114,7 +115,8 @@ LL getpi(LL x)
 {
     if(x < N)   return pi[x];
     LL ans = getphi(x, pi[sqrt3(x)]) + pi[sqrt3(x)] - 1;
-    for(int i = pi[sqrt3(x)] + 1, ed = pi[sqrt2(x)]; i <= ed; ++i) ans -= getpi(x / prime[i]) - i + 1;
+    for(int i = pi[sqrt3(x)] + 1, ed = pi[sqrt2(x)]; i <= ed; ++i) 
+    	ans -= getpi(x / prime[i]) - i + 1;
     return ans;
 }
 LL lehmer_pi(LL x)
@@ -130,7 +132,8 @@ LL lehmer_pi(LL x)
         sum -= lehmer_pi(w);
         if (i > c) continue;
         LL lim = lehmer_pi(sqrt2(w));
-        for (int j = i; j <= lim; j++) sum -= lehmer_pi(w / prime[j]) - (j - 1);
+        for (int j = i; j <= lim; j++) 
+		sum -= lehmer_pi(w / prime[j]) - (j - 1);
     }
     return sum;
 }
@@ -445,7 +448,8 @@ struct Matrix {
         for(int i=1; i<=n; ++i) { //枚举列（项）
             int mx=i;
             for(int j=i+1; j<=n; ++j) { //选出该列最大系数
-                if(fabs(yuedan_A[j][i])>fabs(yuedan_A[mx][i])){//fabs是取浮点数的绝对值的函数
+                if(fabs(yuedan_A[j][i])>fabs(yuedan_A[mx][i])){
+		//fabs是取浮点数的绝对值的函数
                     mx=j;
                 }
             }
@@ -864,7 +868,8 @@ typedef unsigned long long ull;
 typedef unsigned long long ULL;
 
 ULL prime[6] = {2, 3, 5, 233, 331};
-ULL qmul(ULL x, ULL y, ULL mod) { // 乘法防止溢出， 如果p * p不爆LL的话可以直接乘； O(1)乘法或者转化成二进制加法
+ULL qmul(ULL x, ULL y, ULL mod) { 
+// 乘法防止溢出， 如果p * p不爆LL的话可以直接乘； O(1)乘法或者转化成二进制加法
     return (x * y - (long long)(x / (long double)mod * y + 1e-3) *mod + mod) % mod;
     /*
     LL ret = 0;
