@@ -47,11 +47,14 @@ int  tralation()
 int Manacher(int total)
 {
 	int maxx = 0;
-	int mx = 0,id = 0; //id表示的最大回文的中心点是哪一个 而mx表示的是最大回文的中心点的最远的边界是哪一个
+	int mx = 0,id = 0; 
+	//id表示的最大回文的中心点是哪一个 而mx表示的是最大回文的中心点的最远的边界是哪一个
 	for(int i =1;i<=total;i++)
 	{
 		if(i<mx) //如果此刻 i的点比mx还要小的话说明 在mx-i处这边是回文 然后在比较一下
-			len[i] = min(mx - i,len[2*id-i]); //因为2*id - i 和 i 他们是相对于id对称的 所以说吧 就是要比较mx-i和len[2*id-i] ;
+			len[i] = min(mx - i,len[2*id-i]); 
+		//因为2*id - i 和 i 他们是相对于id对称的 所以说吧 就是要比较mx-i和len[2*id-i] ;
+		
 		else len[i] = 1; //如果此刻i的点比边界还要大的话 那就需要从一开始加了
 		while(endd[i+len[i]]==endd[i-len[i]])
 			len[i]++;
