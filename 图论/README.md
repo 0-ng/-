@@ -498,6 +498,44 @@ void solve(){
     }
     printf("%d\n",ans);
 }
+
+--------------------------------------g为i-j的边权
+long long a[MAXN],b[MAXN],c[MAXN],p[MAXN];
+long long g[MAXN][MAXN];
+long long cc[MAXN],mb[MAXN],ka[MAXN],kb[MAXN];
+long long vb[MAXN];
+void Bfs(int u){
+    long long a,v=0,vl=0,d;
+    memarray(p,0);
+    memarray(cc,INF);
+    mb[v]=u;
+    do {
+        a=mb[v],d=INF,vb[v]=1;
+        for(int b=1;b<=n;b++)if(!vb[b]){
+            if(cc[b]>ka[a]+kb[b]-g[a][b])
+                cc[b]=ka[a]+kb[b]-g[a][b],p[b]=v;
+            if(cc[b]<d) d=cc[b],vl=b;
+        }
+        for(int b=0;b<=n;b++)
+            if(vb[b]) ka[mb[b]]-=d,kb[b]+=d;
+            else cc[b]-=d;
+        v=vl;
+    } while(mb[v]);
+    while(v) mb[v]=mb[p[v]],v=p[v];
+}
+long long KM(){
+    memarray(mb,0);
+    memarray(ka,0);
+    memarray(kb,0);
+    for(int a=1;a<=n;a++){
+        memarray(vb,0);
+		Bfs(a);
+	}
+	long long res=0;
+	for(int b=1;b<=n;b++)
+        res+=g[mb[b]][b];
+	return res;
+}
 ```
 <span id="9"><h4>9. 拓扑排序</h4></span>
 ```cpp
