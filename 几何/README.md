@@ -178,7 +178,8 @@ struct Line{
     }
     double disSegToSeg(Line v){
         //`返回线段到线段的距离` //`前提是两线段不相交，相交距离就是0了`
-        return min(min(disPointToSeg(v.s),disPointToSeg(v.e)),min(v.disPointToSeg(s),v.disPointToSeg(e)));
+        return min(min(disPointToSeg(v.s),disPointToSeg(v.e)),
+                    min(v.disPointToSeg(s),v.disPointToSeg(e)));
     }
     Point lineProg(Point p){//checked
         //`返回点p在直线上的投影`
@@ -876,7 +877,8 @@ double rota(int n){
 
 
         double h=((stk[down+1]-stk[down])^(stk[up]-stk[down]));
-        double w=(((stk[left]-stk[down])*(stk[down]-stk[down+1]))+((stk[down+1]-stk[down])*(stk[right]-stk[down])));
+        double w=(((stk[left]-stk[down])*(stk[down]-stk[down+1]))+
+                ((stk[down+1]-stk[down])*(stk[right]-stk[down])));
         ret=min(ret,h*w/(stk[down+1]-stk[down]).norm());
     }
     return ret;
@@ -1014,7 +1016,8 @@ struct Point3{
     Vector3 operator*(double d){return {x*d,y*d,z*d};}
     Vector3 operator/(double d){return {x/d,y/d,z/d};}
     bool operator==(Point3 p){return cmp(x,p.x)==0&&cmp(y,p.y)==0&&cmp(z,p.z)==0;}
-    bool operator<(Point3 p){if(cmp(x,p.x)==0&&cmp(y,p.y))return z<p.z;else if(cmp(x,p.x))return y<p.y;return x<p.x;}
+    bool operator<(Point3 p){if(cmp(x,p.x)==0&&cmp(y,p.y))return z<p.z;
+                            else if(cmp(x,p.x))return y<p.y;return x<p.x;}
 };
 //Point3 pt[MAXN];
 inline double area(Point3 o, Point3 a, Point3 b) {
@@ -1041,7 +1044,8 @@ struct CH3D {
                 (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)};
     } //叉乘
 //    double area(Point3 a, Point3 b, Point3 c) { return ((b - a) ^ (c - a)).len(); }
-//    double volume(Point3 a, Point3 b, Point3 c, Point3 d) { return ((b - a) ^ (c - a)) * (d - a); }//四面体有向体积*6
+//    double volume(Point3 a, Point3 b, Point3 c, Point3 d) { 
+        //return ((b - a) ^ (c - a)) * (d - a); }//四面体有向体积*6
     double dblcmp(Point3 &p, face &f) {
         Point3 m = P[f.b] - P[f.a];
         Point3 n = P[f.c] - P[f.a];
@@ -1189,7 +1193,8 @@ struct CH3D {
     }//三维凸包重心
     double ptoface(Point3 p, int i) {
         return fabs(
-                volume(P[F[i].a], P[F[i].b], P[F[i].c], p) / ((P[F[i].b] - P[F[i].a]) ^ (P[F[i].c] - P[F[i].a])).len()
+                volume(P[F[i].a], P[F[i].b], P[F[i].c], p) / 
+                ((P[F[i].b] - P[F[i].a]) ^ (P[F[i].c] - P[F[i].a])).len()
                 );
     }//点到面的距离
 }ch;
