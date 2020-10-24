@@ -249,7 +249,8 @@ BigInteget BigInteget::operator - (const BigInteget& b){
         } else carry  = 0;
         answer.digit[answer.length++] = current;
     }
-    while(answer.digit[answer.length - 1] == 0 && answer.length > 1){//书上在这里写得是answer.digit[answer.length]
+    while(answer.digit[answer.length - 1] == 0 && answer.length > 1){
+    //书上在这里写得是answer.digit[answer.length]
         answer.length--;
     }
     return answer;
@@ -265,7 +266,8 @@ BigInteget BigInteget::operator * (const BigInteget& b){
         answer.digit[i+1] += answer.digit[i] / 10;
         answer.digit[i] %= 10;
     }
-    while(answer.digit[answer.length - 1] == 0 && answer.length > 1){ //书上在这里写得是answer.digit[answer.length]
+    while(answer.digit[answer.length - 1] == 0 && answer.length > 1){ 
+    //书上在这里写得是answer.digit[answer.length]
         answer.length--;
     }
     return answer;
@@ -288,7 +290,8 @@ BigInteget BigInteget::operator / (const BigInteget& b){
             answer.digit[i]++;
         }
     }
-    while(answer.digit[answer.length - 1] == 0 && answer.length > 1){//书上在这里写得是answer.digit[answer.length]
+    while(answer.digit[answer.length - 1] == 0 && answer.length > 1){
+    //书上在这里写得是answer.digit[answer.length]
         answer.length--;
     }
     return answer;
@@ -358,8 +361,10 @@ float Q_rsqrt( float number ){
    i   = * ( int * ) &y;   // evil doubleing point bit level hacking
    i   = 0x5f3759df - ( i >> 1 ); // what the fuck?
    y   = * ( float * ) &i;
-   y   = y * ( threehalfs - ( x2 * y * y ) ); // 1st iteration
-   y   = y * ( threehalfs - ( x2 * y * y ) ); // 2nd iteration, this can be removed
+   y   = y * ( threehalfs - ( x2 * y * y ) ); 
+   // 1st iteration
+   y   = y * ( threehalfs - ( x2 * y * y ) ); 
+   // 2nd iteration, this can be removed
 
    return y;
 }
