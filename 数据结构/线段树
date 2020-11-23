@@ -220,3 +220,51 @@ void init(){
     for(int i=1;i<=n;i++)
         scanf("%lld",W+i);
 }
+
+///////////////////////区间赋值 单点查询
+struct SGT
+{
+    int sum[MAXN<<2],lazy[MAXN<<2];
+    void pushup(int rt){
+        sum[rt]=sum[rt<<1]+sum[rt<<1|1];
+    }
+    void pushdown(int l,int r,int rt){
+        if(lazy[rt]!=-1){
+            int mid=(l+r)>>1;
+            lazy[rt<<1]=lazy[rt];
+            lazy[rt<<1|1]=lazy[rt];
+            sum[rt<<1]=lazy[rt]*(mid-l+1);
+            sum[rt<<1|1]=lazy[rt]*(r-mid);
+            lazy[rt]=-1;
+        }
+    }
+    void build(int l,int r,int rt){
+        lazy[rt]=-1;
+        sum[rt]=0;
+        if(l==r)return;
+        int mid=(l+r)>>1;
+        build(l,mid,rt<<1);
+        build(mid+1,r,rt<<1|1);
+        pushup(rt);
+    }
+    void update(int l,int r,int rt,int L,int R,int c)
+    {
+        if(L<=l&&r<=R){
+            sum[rt]=c*(r-l+1);
+            lazy[rt]=c;
+            return;
+        }
+        pushdown(l,r,rt);
+        int mid=(l+r)>>1;
+        if(L<=mid)update(l,mid,rt<<1,L,R,c);
+        if(R>mid) update(mid+1,r,rt<<1|1,L,R,c);
+        pushup(rt);
+    }
+    int query(int l,int r,int rt,int p){
+        if(l==r)return sum[rt];
+        pushdown(l,r,rt);
+        int mid=(l+r)>>1;
+        if(p<=mid)return query(l,mid,rt<<1,p);
+        else return query(mid+1,r,rt<<1|1,p);
+    }
+}tree;
