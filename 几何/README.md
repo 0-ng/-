@@ -16,6 +16,7 @@
 ### [14. simpson积分](#14)
 ### [15. 三维几何凸包](#15)
 ### [16. 平面最近点对](#16)
+### [17. 旋转卡壳求最大四边形面积](#17)
 
 <span id="0"><h4>0. 基础</h4></span>
 1. 判断是否输出负0
@@ -1255,5 +1256,32 @@ double Closest_Pair(int left, int right){
 void solve(){
     sort(p+1,p+n+1);
     printf("%.2f\n",Closest_Pair(1,n)/2);
+}
+```
+
+
+<span id="17"><h4>17. 旋转卡壳求最大四边形面积</h4></span>
+```cpp
+double rota(int n){
+    double ret=0;
+    int j=2,k=3,l=2;
+    Vector v;
+    for(int i=1;i<=n;i++){
+        v=stk[i+1]-stk[i];
+        while((v^(stk[k+1]-stk[k]))>0)
+            k=k%n+1;
+        v=stk[i]-stk[k];
+//        j=i%n+1;
+        while((v^(stk[j+1]-stk[j]))>0)
+            j=j%n+1;
+        double sum=v^(stk[j]-stk[k]);
+        v=stk[k]-stk[i];
+//        l=k%n+1;
+        while((v^(stk[l+1]-stk[l]))>0)
+            l=l%n+1;
+        sum+=v^(stk[l]-stk[i]);
+        ret=max(ret,sum);
+    }
+    return fabs(ret)/2;
 }
 ```
