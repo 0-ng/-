@@ -20,3 +20,46 @@ double rota(int n){
     }
     return fabs(ret)/2;
 }
+
+
+long long rota(int n){
+    long long ret=0;
+    int j=2,k=3,l=2;
+    Vector v;
+    for(int i=1;i<=n;i++){//n^2应该一定能过
+        l=i+3;
+        j=i+1;
+        for(int k=i+2;k<=n;k++){
+            v=stk[i]-stk[k];
+            while((v^(stk[j+1]-stk[j]))>0)
+                j=j%n+1;
+
+            v=stk[k]-stk[i];
+            while((v^(stk[l+1]-stk[l]))>0)
+                l=l%n+1;
+
+            long long sum=(stk[i]^stk[j])+(stk[j]^stk[k])+(stk[k]^stk[l])+(stk[l]^stk[i]);
+            ret=max(ret,abs(sum));
+        }
+    }
+//    bool first=true;
+//    for(int i=1;i<=n;i++){//nlogn不会证明
+//        v=stk[i+1]-stk[i];
+//        while((v^(stk[k+1]-stk[k]))>0)
+//            k=k%n+1;
+//        v=stk[i]-stk[k];
+//        while((v^(stk[j+1]-stk[j]))>0)
+//            j=j%n+1;
+//        long long sum=abs(v^(stk[j]-stk[k]));
+//        v=stk[k]-stk[i];
+//        if(first){
+//            l=k%n+1;
+//            first=false;
+//        }
+//        while((v^(stk[l+1]-stk[l]))>0)
+//            l=l%n+1;
+//        sum+=abs(v^(stk[l]-stk[i]));
+//        ret=max(ret,sum);
+//    }
+    return ret;
+}
