@@ -468,8 +468,8 @@ struct BIT{//单点修改区间查询
     int sum=query(idx);//前idx个数的和
      
      差分[1-idx]区间加1
-    update(1,1);
-    update(idx+1,-1);
+    update(1,1);????
+    update(idx+1,-1);????
      */
 };
 struct BIT{//区间修改区间查询
