@@ -6,6 +6,8 @@
 ### [5. 线段树区间最大最小单点修改](#5)
 ### [6. 树状数组](#6)
 ### [7. 二维树状数组求矩阵异或](#7)
+### [8. 线段树区间赋值单点查询](#8)
+### [9. CDQ分治](#9)
 
 <span id="1"><h4>1.	RMQ</h4></span>
 ```cpp
@@ -553,7 +555,7 @@ void init(){
 
 
 
-<span id="8"><h4>7.    线段树区间赋值单点查询</h4></span>
+<span id="8"><h4>8.    线段树区间赋值单点查询</h4></span>
 ```cpp
 struct SGT
 {
@@ -604,4 +606,92 @@ struct SGT
 
 tree.update(1,n,1,l,r,val);
 tree.query(1,n,1,id);
+```
+
+
+
+
+<span id="9"><h4>9.    CDQ分治</h4></span>
+题目描述
+有 n 个元素，第 i 个元素有 a_i,b_i,c_i 三个属性，设 f(i) 表示满足 a_j <= a_i 且 b_j <= b_i 且 c_j <= c_i 且 j != i 的 j 的数量。
+对于 d \in [0, n)d∈[0,n)，求 f(i) = d 的数量。
+输入格式
+第一行两个整数 n,k，表示元素数量和最大属性值。
+接下来 n 行，每行三个整数 a_i ,b_i,c_i，分别表示三个属性值。
+输出格式
+n 行，第 d+1 行表示 f(i) = d 的 i 的数量。
+
+```cpp
+struct Point{
+    int x,y,z;
+    int id,val,ans;
+    void read(){
+        scanf("%d%d%d",&x,&y,&z);
+    }
+    bool operator<(const Point p)const{
+        if(x==p.x){
+            if(y==p.y)return z<p.z;
+            return y<p.y;
+        }
+        return x<p.x;
+    }
+}p[MAXN];
+bool cmp1(Point p1,Point p2){
+    if(p1.y==p2.y)return p1.z<p2.z;
+    return p1.y<p2.y;
+}
+int lowbit(int x){return x&-x;}
+int sum[MAXN<<2];
+void add(int id,int val){
+    for(id;id<=m;id+=lowbit(id))
+        sum[id]+=val;
+}
+int query(int id){
+    int ret=0;
+    for(id;id;id-=lowbit(id))
+        ret+=sum[id];
+    return ret;
+}
+void CDQ(int l,int r){
+    if(l==r)return;
+    int mid=(l+r)>>1;
+    CDQ(l,mid);CDQ(mid+1,r);
+    sort(p+l,p+mid+1,cmp1);
+    sort(p+mid+1,p+r+1,cmp1);
+    int i,j;
+    for(j=mid+1,i=l;j<=r;j++){
+        while(i<=mid&&p[i].y<=p[j].y)
+            add(p[i].z,p[i].val),i++;
+        p[j].ans+=query(p[j].z);
+    }
+    for(j=l;j<i;j++){
+        add(p[j].z,-p[j].val);
+    }
+}
+int num[MAXN];
+void solve() {
+    sort(p+1,p+1+n);
+    int _n=1;
+    for(int i=2;i<=n;i++){
+        if(p[_n].x==p[i].x&&p[_n].y==p[i].y&&p[_n].z==p[i].z)
+            p[_n].val++;
+        else
+            p[++_n]=p[i];
+    }
+    CDQ(1,_n);
+    for(int i=1;i<=_n;i++){
+        num[p[i].ans+p[i].val-1]+=p[i].val;
+    }
+    for(int i=0;i<n;i++)
+        printf("%d\n",num[i]);
+}
+void init(){
+    scanf("%d%d",&n,&m);
+    for(int i=1;i<=n;i++){
+        p[i].read();
+        p[i].id=i;
+        p[i].val=1;
+        p[i].ans=0;
+    }
+}
 ```
