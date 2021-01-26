@@ -635,7 +635,7 @@ struct Point{
         }
         return x<p.x;
     }
-}p[MAXN];
+}p[MAXN],B[MAXN];
 bool cmp1(Point p1,Point p2){
     if(p1.y==p2.y)return p1.z<p2.z;
     return p1.y<p2.y;
@@ -656,8 +656,6 @@ void CDQ(int l,int r){
     if(l==r)return;
     int mid=(l+r)>>1;
     CDQ(l,mid);CDQ(mid+1,r);
-    sort(p+l,p+mid+1,cmp1);
-    sort(p+mid+1,p+r+1,cmp1);
     int i,j;
     for(j=mid+1,i=l;j<=r;j++){
         while(i<=mid&&p[i].y<=p[j].y)
@@ -667,6 +665,14 @@ void CDQ(int l,int r){
     for(j=l;j<i;j++){
         add(p[j].z,-p[j].val);
     }
+    for(int i=l,l1=l,l2=mid+1;i<=r;i++){
+        if(l2>r||l1<=mid&&p[l1].y<=p[l2].y)
+            B[i]=p[l1++];
+        else
+            B[i]=p[l2++];
+    }
+    for(int i=l;i<=r;i++)
+        p[i]=B[i];
 }
 int num[MAXN];
 void solve() {
