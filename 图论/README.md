@@ -22,6 +22,7 @@
 ### [19. 最小费用最大流（逐步炒菜）](#19)
 ### [20. 志愿者代价](#20)
 ### [21. 线段树建图1到多 多到1 1到1](#21)
+### [22. 最大流模板 2021-2-9](#22)
 
 <span id="0"><h4>0. 性质</h4></span>
 树的重心性质：
@@ -1574,5 +1575,112 @@ void init(){
             updateManyToOne(1,n,l,r,1,u,w);
         }
     }
+}
+```
+
+
+
+<span id="22"><h4>22. 最大流模板 2021-2-9</h4></span>
+```cpp
+struct Dinic{
+    int head[MAXN];
+    int cur[MAXN];
+    struct Edge{
+        int next;
+        int to;
+        int w;
+    }edge[MAXN*6];
+    int cnt=1;
+    int s,t;
+    int dis[MAXN];
+    void add(int u,int v,int w,bool shuangxiang=false){
+        cnt++;
+        edge[cnt].to=v;
+        edge[cnt].w=w;
+        edge[cnt].next=head[u];
+        head[u]=cnt;
+
+        cnt++;
+        edge[cnt].to=u;
+        if(shuangxiang)
+            edge[cnt].w=w;
+        else
+            edge[cnt].w=0;
+        edge[cnt].next=head[v];
+        head[v]=cnt;
+    }
+    bool bfs(){
+        memcpy(cur,head, sizeof(head));
+        memarray(dis,0);
+        dis[s]=1;
+        queue<int>q;
+        q.push(s);
+        while(!q.empty()){
+            int now=q.front();q.pop();
+            for(int i=head[now];i;i=edge[i].next){
+                int to=edge[i].to;
+                int w=edge[i].w;
+                if(dis[to]||w==0)continue;
+                dis[to]=dis[now]+1;
+                if(dis[t])return true;
+                q.push(to);
+            }
+        }
+        return dis[t];
+    }
+    int dfs(int now,int flow){
+        if(now==t)return flow;
+        int ret=0;
+        for(int &i=cur[now];i;i=edge[i].next){
+            int to=edge[i].to;
+            int w=edge[i].w;
+            if(dis[to]!=dis[now]+1||w==0)continue;
+            int tmp=dfs(to,min(flow,w));
+            flow-=tmp;
+            ret+=tmp;
+            edge[i].w-=tmp;
+            edge[i^1].w+=tmp;
+            if(flow<=0)break;
+        }
+        if(ret==0)dis[now]=-1;
+        return ret;
+    }
+    int run(){
+        int ret=0;
+        while(bfs()){
+            ret+=dfs(s,INF);
+        }
+        return ret;
+    }
+}dinic;
+void solve(){
+    printf("%d\n",dinic.run());
+}
+int id(int i,int j){
+    return (i-1)*m+j;
+}
+void init(){
+    scanf("%d%d",&n,&m);
+    int w;
+    rep(i,1,n){
+        rep(j,1,m-1){
+            scanf("%d",&w);
+            dinic.add(id(i,j),id(i,j+1),w,true);
+        }
+    }
+    rep(i,1,n-1){
+        rep(j,1,m){
+            scanf("%d",&w);
+            dinic.add(id(i,j),id(i+1,j),w,true);
+        }
+    }
+    rep(i,1,n-1){
+        rep(j,1,m-1){
+            scanf("%d",&w);
+            dinic.add(id(i,j),id(i+1,j+1),w,true);
+        }
+    }
+    dinic.s=id(1,1);
+    dinic.t=id(n,m);
 }
 ```
