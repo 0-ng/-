@@ -18,6 +18,7 @@
 ### [16. 平面最近点对](#16)
 ### [17. 旋转卡壳求最大四边形面积](#17)
 ### [18. 可加点的动态凸包](#18)
+### [19. KD-Tree](#19)
 
 
 <span id="0"><h4>0. 基础</h4></span>
@@ -1513,4 +1514,141 @@ int main()
     return 0;
 }
 
+```
+
+<span id="19"><h4>19. KD-Tree</h4></span>
+```cpp
+const int DG=2;
+struct Point{
+    double x[DG];
+    void read(){
+        rep(i,0,DG-1){
+            scanf("%lf",&x[i]);
+        }
+    }
+    double len(){
+        return sqrt(len2());
+    }
+    double disToPoint(const Point p){
+        return (*this-p).len2();
+    }
+    double len2(){
+        double ret=0;
+        rep(i,0,DG-1){
+            ret+=x[i]*x[i];
+        }
+        return ret;
+    }
+    Point operator-(const Point p)const{
+        Point ret;
+        rep(i,0,DG-1){
+            ret.x[i]=x[i]-p.x[i];
+        }
+        return ret;
+    }
+}p[MAXN];
+struct KDT{
+private:
+    double min_ans,max_ans;
+    Point p[MAXN],mi[MAXN],ma[MAXN],_p;
+    int tot,rt,ls[MAXN],rs[MAXN];
+    int nw(const Point &_p){
+        p[++tot]=_p;
+        rep(i,0,DG-1){
+            mi[tot].x[i]=ma[tot].x[i]=_p.x[i];
+        }
+        ls[tot]=rs[tot]=0;
+        return tot;
+    }
+    void upd(int u,const Point &_p){
+        rep(i,0,DG-1){
+            mi[u].x[i]=min(mi[u].x[i],_p.x[i]);
+            ma[u].x[i]=max(ma[u].x[i],_p.x[i]);
+        }
+    }
+    void ins(int &u,bool d){
+        if(!u){
+            u=nw(_p);
+            return;
+        }
+        ins(_p.x[d]<=p[u].x[d]?ls[u]:rs[u],d^1);
+        upd(u,_p);
+    }
+    double min_dis(int u,const Point &_p){
+        if(!u)return 1e15;
+        double dis=0;
+        rep(i,0,DG-1){
+            double tmp=max(_p.x[i]-ma[u].x[i],0.0)+max(mi[u].x[i]-_p.x[i],0.0);
+            dis+=tmp*tmp;
+        }
+        return dis;
+    }
+    double max_dis(int u,const Point &_p){
+        if(!u)return 0;
+        double dis=0;
+        rep(i,0,DG-1){
+            double tmp=max(fabs(_p.x[i]-ma[u].x[i]),fabs(mi[u].x[i]-_p.x[i]));
+            dis+=tmp*tmp;
+        }
+        return dis;
+    }
+    void query_min(int u){
+        if(!u)return;
+        min_ans=min(min_ans,p[u].disToPoint(_p));
+        double lv=min_dis(ls[u],_p),rv=min_dis(rs[u],_p);
+        if(lv>rv){
+            if(rv<min_ans)query_min(rs[u]);
+            if(lv<min_ans)query_min(ls[u]);
+        }else{
+            if(lv<min_ans)query_min(ls[u]);
+            if(rv<min_ans)query_min(rs[u]);
+        }
+    }
+    void query_max(int u){
+        if(!u)return;
+        max_ans=max(max_ans,p[u].disToPoint(_p));
+        double lv=max_dis(ls[u],_p),rv=max_dis(rs[u],_p);
+        if(lv<rv){
+            if(rv>max_ans)query_max(rs[u]);
+            if(lv>max_ans)query_max(ls[u]);
+        }else{
+            if(lv>max_ans)query_max(ls[u]);
+            if(rv>max_ans)query_max(rs[u]);
+        }
+    }
+public:
+    void ins(const Point &P){
+        _p=P;
+        ins(rt,0);
+    }
+    double ask_min(const Point &P){
+        _p=P;
+        min_ans=1e15;
+        query_min(rt);
+        return min_ans;
+    }
+    double ask_max(const Point &P){
+        _p=P;
+        max_ans=0;
+        query_max(rt);
+        return max_ans;
+    }
+}tr;
+void solve(){
+    double mn=1e15;
+    double mx=0;
+    rep(i,1,n){
+        mn=min(mn,tr.ask_min(p[i]));
+        mx=max(mx,tr.ask_max(p[i]));
+        tr.ins(p[i]);
+    }
+    printf("%.4f %.4f\n",sqrt(mn),sqrt(mx));
+}
+void init() {
+    scanf("%d",&n);
+    rep(i,1,n){
+        p[i].read();
+    }
+    random_shuffle(p+1,p+1+n);
+}
 ```
