@@ -653,7 +653,62 @@ struct halfplanes{
     }
 }hpi;
 
-
+//2021-02-22
+bool HPIcmp(Line a,Line b) {
+    if (fabs(a.ang - b.ang) > EPS)return a.ang < b.ang;
+    else return ((a.s - b.s) ^ (b.e - b.s)) < 0;
+}
+struct halfplanes{
+    int n;
+    Line line[100050];
+    Point p[100050];
+    Line Q[100050];
+    int head,tail;
+    double HPI() {
+        rep(i,1,n){
+            line[i].ang=atan2(line[i].e.y-line[i].s.y,line[i].e.x-line[i].s.x);
+        }
+        sort(line+1, line+n+1, HPIcmp);
+        int tot = 1;
+        rep(i,2,n){
+            if (fabs(line[i].ang - line[i - 1].ang) > EPS) //去掉斜率重复的
+                line[++tot] = line[i];
+        }
+        head = 1, tail = 2;
+        Q[1] = line[1];Q[2] = line[2];
+        rep(i,3,tot){
+            if (fabs((Q[tail].e - Q[tail].s) ^ (Q[tail - 1].e - Q[tail - 1].s)) < EPS ||
+                fabs((Q[head].e - Q[head].s) ^ (Q[head + 1].e - Q[head + 1].s)) < EPS)
+                return false;
+            while (head < tail && sgn((Q[tail].crossPoint(Q[tail - 1]) - line[i].s) ^ (line[i].e - line[i].s)) > 0)
+                tail--;
+            while (head < tail && sgn((Q[head].crossPoint(Q[head + 1]) - line[i].s) ^ (line[i].e - line[i].s)) > 0)
+                head++;
+            Q[++tail] = line[i];
+        }
+        while (head < tail && sgn((Q[tail].crossPoint(Q[tail - 1]) -
+                                Q[head].s) ^ (Q[head].e - Q[head].s)) > 0)
+            tail--;
+        while (head < tail && sgn((Q[head].crossPoint(Q[head + 1]) -
+                                Q[tail].s) ^ (Q[tail].e - Q[tail].s)) > 0)
+            head++;
+        if (tail <= head + 1) return false;
+        int num=0;
+        getConvex(p,num);
+        double ans=0;
+        rep(i,1,num){
+            ans+=(p[i]-p[i%num+1]).len();
+        }
+        return ans;
+    }
+    void getConvex(Point res[], int &resn){
+        resn=0;
+        for(int i = head; i < tail; i++)
+            res[++resn] = Q[i].crossPoint(Q[i+1]);
+        if(head < tail - 1)
+            res[++resn] = Q[head].crossPoint(Q[tail]);
+    }
+}hpi;
 -------------------------------------------------多项式
             double a=0,b=0,c=0;
             a=2*(X[i]-X[j]);
