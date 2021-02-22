@@ -24,7 +24,9 @@
 <span id="0"><h4>0. 基础</h4></span>
 1. 判断是否输出负0
 2. 判断生成凸包时有无等于
-
+acos： [0,pi] radians.
+asin： [-pi/2,+pi/2] radians.
+atan： [-pi/2,+pi/2] radians.
 
 <span id="1"><h4>1. 几何</h4></span>
 ```cpp
