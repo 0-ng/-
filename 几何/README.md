@@ -27,6 +27,8 @@
 acos： [0,pi] radians.
 asin： [-pi/2,+pi/2] radians.
 atan： [-pi/2,+pi/2] radians.
+平面问题可以先算左下角的子问题，将平面或点旋转后再算一次以此类推
+
 
 <span id="1"><h4>1. 几何</h4></span>
 ```cpp
