@@ -1711,3 +1711,157 @@ void init() {
     random_shuffle(p+1,p+1+n);
 }
 ```
+
+//2020-02-23 加入替罪羊树优化
+```cpp
+const int DG=2;
+int WD=0;
+struct Point{
+    int x[DG];
+    void read(){
+        rep(i,0,DG-1){
+            scanf("%d",&x[i]);
+        }
+    }
+    Point operator-(const Point p)const{
+        Point ret;
+        rep(i,0,DG-1){
+            ret.x[i]=x[i]-p.x[i];
+        }
+        return ret;
+    }
+    bool operator<(const Point p)const{
+        return x[WD]<p.x[WD];
+    }
+}p[MAXN];
+struct KDT{
+private:
+    struct Node{
+        Point top;
+        Point mi,ma;
+        int ls,rs;
+        int son;
+    };
+    int closest_ans;
+    Node node[MAXN];
+    Point _p;
+    int tot,rt;
+    double alpha=0.75;
+    int rubbish[MAXN],top;
+    int newnode(){
+        if(top)return rubbish[top--];
+        else return ++tot;
+    }
+    int nw(const Point &_p){
+        int now=newnode();
+        node[now].top=node[now].mi=node[now].ma=_p;
+        node[now].ls=node[now].rs=0;
+        node[now].son=1;
+        return now;
+    }
+    void upd(int u){
+        int l=node[u].ls,r=node[u].rs;
+        rep(i,0,DG-1){
+            node[u].mi.x[i]=node[u].ma.x[i]=node[u].top.x[i];
+            if(l) {
+                node[u].mi.x[i]=min(node[u].mi.x[i],node[l].mi.x[i]);
+                node[u].ma.x[i]=max(node[u].ma.x[i],node[l].ma.x[i]);
+            }
+            if(r) {
+                node[u].mi.x[i]=min(node[u].mi.x[i],node[r].mi.x[i]);
+                node[u].ma.x[i]=max(node[u].ma.x[i],node[r].ma.x[i]);
+            }
+        }
+        node[u].son=node[l].son+node[r].son+1;
+    }
+    void ins(int &u,int d){
+        if(!u){
+            u=nw(_p);
+            return;
+        }
+        ins(_p.x[d]<=node[u].top.x[d]?node[u].ls:node[u].rs,d^1);
+        upd(u);
+        check(u,d);
+    }
+    int min_dis(int u,const Point &_p){
+        if(!u)return 1e9;
+        int dis=0;
+        rep(i,0,DG-1){
+//            double tmp=max(_p.x[i]-ma[u].x[i],0.0)+max(mi[u].x[i]-_p.x[i],0.0);
+//            dis+=tmp*tmp;
+            dis+=max(_p.x[i]-node[u].ma.x[i],0)+max(node[u].mi.x[i]-_p.x[i],0);
+        }
+        return dis;
+    }
+    int get_dis(Point p1,Point p2){
+        int ret=0;
+        rep(i,0,DG-1){
+            ret+=abs(p1.x[i]-p2.x[i]);
+        }
+        return ret;
+    }
+    void query_closest(int u){
+        if(!u)return;
+        closest_ans=min(closest_ans,get_dis(node[u].top,_p));
+        int lv=min_dis(node[u].ls,_p),rv=min_dis(node[u].rs,_p);
+        if(lv>rv){
+            if(rv<closest_ans)query_closest(node[u].rs);
+            if(lv<closest_ans)query_closest(node[u].ls);
+        }else{
+            if(lv<closest_ans)query_closest(node[u].ls);
+            if(rv<closest_ans)query_closest(node[u].rs);
+        }
+    }
+    void pia(int u,int num){
+        if(node[u].ls)pia(node[u].ls,num);
+        p[num+node[node[u].ls].son+1]=node[u].top;
+        rubbish[++top]=u;
+        if(node[u].rs)pia(node[u].rs,num+node[node[u].ls].son+1);
+    }
+    int build(int l,int r,int wd){
+        if(l>r)return 0;
+        int k=newnode();
+        int mid=(l+r)>>1;
+        WD=wd;
+        nth_element(p+l,p+mid,p+r+1);
+        node[k].top=p[mid];
+        node[k].ls=build(l,mid-1,wd^1);
+        node[k].rs=build(mid+1,r,wd^1);
+        upd(k);
+        return k;
+    }
+    void check(int &u,int wd){//判断子树是否不平衡
+        if(alpha*node[u].son<node[node[u].ls].son||alpha*node[u].son<node[node[u].rs].son){
+            pia(u,0);
+            u=build(1,node[u].son,wd);
+        }
+    }
+public:
+    void ins(const Point &P){
+        _p=P;
+        ins(rt,0);
+    }
+    int ask_closest(const Point &P){
+        _p=P;
+        closest_ans=1e9;
+        query_closest(rt);
+        return closest_ans;
+    }
+}tr;
+void solve(){
+}
+void init(){
+    scanf("%d%d",&n,&m);
+    rep(i,1,n){
+        p[i].read();
+        tr.ins(p[i]);
+    }
+    int ty;
+    rep(i,1,m){
+        scanf("%d",&ty);
+        p[i].read();
+        if(ty==1)tr.ins(p[i]);
+        else printf("%d\n",tr.ask_closest(p[i]));
+    }
+}
+```
