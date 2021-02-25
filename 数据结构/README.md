@@ -8,6 +8,8 @@
 ### [7. 二维树状数组求矩阵异或](#7)
 ### [8. 线段树区间赋值单点查询](#8)
 ### [9. CDQ分治](#9)
+### [10. 主席树区间第k小](#10)
+
 
 <span id="1"><h4>1.	RMQ</h4></span>
 ```cpp
@@ -698,6 +700,74 @@ void init(){
         p[i].id=i;
         p[i].val=1;
         p[i].ans=0;
+    }
+}
+```
+
+
+<span id="10"><h4>10.    主席树区间第k小</h4></span>
+```cpp
+int n, m;
+struct HJT{
+    int n;
+    int node_cnt;
+    int sum[MAXN<<5],rt[MAXN],lc[MAXN<<5],rc[MAXN<<5];
+    void init(int _n){
+        n=_n;
+        build(rt[0],1,n);
+    }
+    void build(int &rt,int l,int r){
+        rt=++node_cnt;
+        if(l==r)return;
+        int mid=(l+r)>>1;
+        build(lc[rt],l,mid);
+        build(rc[rt],mid+1,r);
+    }
+    void modify(int id,int now){
+        rt[now]=modify(id,rt[now-1],1,n);
+    }
+    int modify(int id,int o,int l,int r){
+        int oo=++node_cnt;
+        lc[oo]=lc[o];
+        rc[oo]=rc[o];
+        sum[oo]=sum[o]+1;
+        if(l==r)return oo;
+        int mid=(l+r)>>1;
+        if(id<=mid)lc[oo]=modify(id,lc[oo],l,mid);
+        else rc[oo]=modify(id,rc[oo],mid+1,r);
+        return oo;
+    }
+    int query(int l,int r,int k){
+        return query(rt[l-1],rt[r],1,n,k);
+    }
+    int query(int u,int v,int l,int r,int k){
+        if(l==r)return l;
+        int mid=(l+r)>>1;
+        int x=sum[lc[v]]-sum[lc[u]];
+        if(x>=k)return query(lc[u],lc[v],l,mid,k);
+        else return query(rc[u],rc[v],mid+1,r,k-x);
+    }
+}hjt;
+int a[MAXN],b[MAXN];
+void solve(){
+    sort(b+1,b+1+n);
+    int num=unique(b+1,b+n+1)-(b+1);
+    hjt.init(num);
+    rep(i,1,n){
+        int id=lower_bound(b+1,b+num+1,a[i])-b;
+        hjt.modify(id,i);
+    }
+    int l,r,k;
+    while(m--){
+        scanf("%d%d%d",&l,&r,&k);
+        printf("%d\n",b[hjt.query(l,r,k)]);
+    }
+}
+void init(){
+    scanf("%d%d",&n,&m);
+    rep(i,1,n){
+        scanf("%d",a+i);
+        b[i]=a[i];
     }
 }
 ```
