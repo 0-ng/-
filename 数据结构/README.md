@@ -747,6 +747,47 @@ struct HJT{
         if(x>=k)return query(lc[u],lc[v],l,mid,k);
         else return query(rc[u],rc[v],mid+1,r,k-x);
     }
+    
+    
+    //建图优化
+    int modify(int l,int r,int pre,int pos,int point){
+        int oo=++node_cnt;
+        if(l==r&&pre>0){
+            sap.addedge(oo,pre,INF);
+        }
+        if(l==r){
+            sap.addedge(oo,point,INF);
+            return oo;
+        }
+        lc[oo]=lc[pre];
+        rc[oo]=rc[pre];
+        int mid=(l+r)>>1;
+        if(pos<=mid)lc[oo]=modify(l,mid,lc[pre],pos,point);
+        else rc[oo]=modify(mid+1,r,rc[pre],pos,point);
+        if(lc[oo]){
+            sap.addedge(oo,lc[oo],INF);
+        }
+        if(rc[oo]){
+            sap.addedge(oo,rc[oo],INF);
+        }
+        return oo;
+    }
+    void query(int l,int r,int x,int L,int R,int point){
+        if(!x||L>r||R<l)return;
+        if(L<=l&&R>=r){
+            sap.addedge(point,x,INF);
+            return;
+        }
+        int mid=(l+r)>>1;
+        if(L<=mid)query(l,mid,lc[x],L,R,point);
+        if(R>mid)query(mid+1,r,rc[x],L,R,point);
+    }
+    hjt.init(sum);
+    rep(i,1,n){
+        if(i>1)hjt.query(1,sum,hjt.rt[i-1],p[i].l,p[i].r,i+n);
+        hjt.rt[i]=hjt.modify(1,sum,hjt.rt[i-1],p[i].a,i);
+    }
+    
 }hjt;
 int a[MAXN],b[MAXN];
 void solve(){
