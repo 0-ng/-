@@ -24,6 +24,8 @@
 ### [21. 线段树建图1到多 多到1 1到1](#21)
 ### [22. 最大流模板 2021-2-9](#22)
 ### [23. SAP最大流模板 2021-2-19](#23)
+### [24. 最小斯坦纳树 2021-2-27](#24)
+
 
 <span id="0"><h4>0. 性质</h4></span>
 树的重心性质：
@@ -1859,3 +1861,100 @@ void init() {
 }
 ```
 
+
+<span id="24"><h4>24. 最小斯坦纳树 2021-2-27</h4></span>
+```cpp
+int n, m;
+int k;
+struct Edge{
+    int to,dis;
+    bool operator<(const Edge e)const{
+        return dis>e.dis;
+    }
+};
+vector<Edge>vec[MAXN];
+vector<int>channel[12];
+int f[MAXN][(1<<10)+10];
+queue<int>q;
+bool inq[MAXN];
+void SPFA(int status){
+    while(!q.empty()){
+        int now=q.front();q.pop();
+        inq[now]=false;
+        for(auto edge:vec[now]){
+            if(f[edge.to][status]>f[now][status]+edge.dis){
+                f[edge.to][status]=f[now][status]+edge.dis;
+                if(!inq[edge.to]){
+                    inq[edge.to]=true;
+                    q.push(edge.to);
+                }
+            }
+        }
+    }
+}
+int cal(int status){
+    memarray(f,INF);
+    int num=0;
+    rep(i,1,k){
+        if(status&(1<<(i-1))){
+            for(auto u:channel[i]){
+                f[u][1<<num]=0;
+                num++;
+            }
+        }
+    }
+    rep(i,1,(1<<num)-1){
+        for(int sub=(i-1)&i;sub;sub=(sub-1)&i){
+            rep(u,1,n){
+                f[u][i]=min(f[u][i],f[u][sub]+f[u][sub^i]);
+            }
+        }
+        rep(u,1,n){
+            if(f[u][i]<INF&&!inq[u]){
+                q.push(u);
+                inq[u]=true;
+            }
+        }
+        SPFA(i);
+    }
+    int ret=1e9;
+    rep(i,1,n){
+        ret=min(ret,f[i][(1<<num)-1]);
+    }
+    return ret;
+}
+int dp[MAXN*MAXN];
+void solve(){
+    memarray(dp,INF);
+    rep(status,1,(1<<k)-1){
+        dp[status]=cal(status);
+        for(int sub=(status-1)&status;sub;sub=(sub-1)&status){
+            dp[status]=min(dp[status],dp[sub]+dp[status^sub]);
+        }
+    }
+    printf("%d\n",dp[(1<<k)-1]);
+}
+void init(){
+    scanf("%d%d%d",&n,&m,&k);
+    int u,v,w,c,id;
+    rep(i,1,m){
+        scanf("%d%d%d",&u,&v,&w);
+        vec[u].pb({v,w});
+        vec[v].pb({u,w});
+    }
+    int has[15];
+    int num=k;
+    rep(i,1,k){
+        scanf("%d%d",&c,&id);
+        has[i]=c;
+        channel[c].pb(id);
+    }
+    sort(has+1,has+1+num);
+    num=unique(has+1,has+1+num)-(has+1);
+    rep(i,1,num){
+        int id=lower_bound(has+1,has+1+num,has[i])-has;
+        channel[id]=channel[has[i]];
+    }
+    k=num;
+}
+```
