@@ -1957,4 +1957,89 @@ void init(){
     }
     k=num;
 }
+
+-----------------------------------
+int k;
+struct Steiner{
+    struct Edge{
+        int to;
+        int dis;
+    };
+    vector<Edge>vec[MAXN];
+    vector<int>subG;
+    void addedge(int u,int v,int w){
+        vec[u].pb({v,w});
+        vec[v].pb({u,w});
+    }
+    int f[MAXN][(1<<10)+10];
+    queue<int>q;
+    bool inq[MAXN];
+    void SPFA(int status){
+        while(!q.empty()){
+            int now=q.front();q.pop();
+            inq[now]=false;
+            for(auto edge:vec[now]){
+                if(f[edge.to][status]>f[now][status]+edge.dis){
+                    f[edge.to][status]=f[now][status]+edge.dis;
+                    if(!inq[edge.to]){
+                        inq[edge.to]=true;
+                        q.push(edge.to);
+                    }
+                }
+            }
+        }
+    }
+    int run(){
+        int k=subG.size();
+        memarray(f,INF);
+        for(int i=0;i<k;i++){
+            f[subG[i]][1<<i]=0;
+        }
+        rep(i,1,(1<<k)-1){
+            for(int sub=(i-1)&i;sub;sub=(sub-1)&i){
+                rep(u,1,n){
+                    f[u][i]=min(f[u][i],f[u][sub]+f[u][sub^i]);
+                }
+            }
+            rep(u,1,n){
+                if(f[u][i]<INF&&!inq[u]){
+                    q.push(u);
+                    inq[u]=true;
+                }
+            }
+            SPFA(i);
+        }
+        int ret=1e9;
+        rep(i,1,n){
+            ret=min(ret,f[i][(1<<k)-1]);
+        }
+        return ret;
+    }
+}steiner;
+int Map[105][105];
+void solve(){
+    printf("%d\n",steiner.run());
+}
+void init(){
+    scanf("%d%d%d",&n,&m,&k);
+    int u,v,w;
+    memarray(Map,INF);
+    rep(i,1,m){
+        scanf("%d%d%d",&u,&v,&w);
+        Map[u][v]=Map[v][u]=min(Map[u][v],w);
+    }
+    rep(i,1,n){
+        rep(j,i+1,n){
+            if(Map[i][j]<INF){
+                steiner.addedge(i,j,Map[i][j]);
+            }
+        }
+    }
+    rep(i,1,k){
+        scanf("%d",&u);
+        steiner.subG.pb(u);
+    }
+}
 ```
+
+
