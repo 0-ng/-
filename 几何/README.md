@@ -19,6 +19,8 @@
 ### [17. 旋转卡壳求最大四边形面积](#17)
 ### [18. 可加点的动态凸包](#18)
 ### [19. KD-Tree](#19)
+### [20. 圆的反演](#20)
+### [21. 两圆切线](#21)
 
 
 <span id="0"><h4>0. 基础</h4></span>
@@ -1863,5 +1865,77 @@ void init(){
         if(ty==1)tr.ins(p[i]);
         else printf("%d\n",tr.ask_closest(p[i]));
     }
+}
+```
+
+<span id="20"><h4>20. 圆的反演</h4></span>
+```cpp
+struct Inversion
+{
+    Point inv(Circle O, Point p)    //点的反演（不过反演圆圆心）
+    {
+        Vector v=p-O.p;
+        v=v*((O.r*O.r)/(v.len2()));
+        return O.p+v;
+    }
+    Line inv_on(Circle O, Line l){return l;}  //直线反演（过反演圆圆心）
+    Circle inv_off(Circle O, Line v)         //直线反演（不过反演圆圆心）
+    {
+        Point p=inv(O,v.lineProg(O.p));
+        Vector op=(p-O.p)*0.5;
+        return (Circle){O.p+op,(op).len()};
+    }
+    Line inv_on(Circle O, Circle c)      //圆反演（过反演圆圆心）
+    {
+        auto v=c.p-O.p;
+        Point s=O.p+v*2;
+        Point e=s+(Point){v.y,-v.x};
+        return (Line){s,e};
+    }
+    Circle inv_off(Circle O, Circle c)  //圆反演（不过反演圆圆心）
+    {
+        auto oc=c.p-O.p, v=oc*(1.0/(oc).len());
+        Point a=c.p+v*(-c.r), b=c.p+v*c.r, aa=inv(O,a), bb=inv(O,b);
+        return (Circle){ (Point){ (aa.x+bb.x)/2, (aa.y+bb.y)/2 }, (aa-bb).len()/2 };
+    }
+}Inv;
+
+```
+
+<span id="21"><h4>21. 两圆切线</h4></span>
+```cpp
+
+Line ANS[5];
+//求公切线，这个模板都没问题
+int GCCI(Circle A,Circle B){//Get_Circle_Circle_Intersection
+    int cnt=0,a=0,b=1;
+    if(A.r<B.r) swap(A,B),swap(a,b);
+    Vector u=B.p-A.p;
+    double d=u.len(),rdec=A.r-B.r,radd=A.r+B.r;
+    if(sgn(d-rdec)<0) return 0;                 //内含
+    if(sgn(d)==0&&A.r==B.r) {
+        ANS[1].s = A.p;
+        ANS[1].e = A.point(PI);
+        return 1;             //重合，无线多，原本返回-1，但这题特殊
+
+    }
+    double base=atan2(u.y,u.x);
+    if(sgn(d-rdec)==0){                            //内切
+        ANS[++cnt].s=A.point(base);
+        ANS[cnt].e=B.point(base);
+        return cnt;
+    }
+    double da=acos((A.r-B.r)/d);                    //2条外公切线
+    ANS[++cnt].s=A.point(base+da); ANS[cnt].e=B.point(base+da);
+    ANS[++cnt].s=A.point(base-da); ANS[cnt].e=B.point(base-da);
+    if(sgn(d-radd)==0){                            //1条内公切线
+        ANS[++cnt].s=A.point(base); ANS[cnt].e=B.point(base+PI);
+    }
+    else if(sgn(d-radd)>0){                     //2条内公切线
+        da=acos((A.r+B.r)/d);
+        ANS[++cnt].s=A.point(base+da); ANS[cnt].e=B.point(base+da+PI);
+        ANS[++cnt].s=A.point(base-da); ANS[cnt].e=B.point(base-da+PI);
+    }
+    return cnt;
 }
 ```
