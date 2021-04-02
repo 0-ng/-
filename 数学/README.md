@@ -13,6 +13,9 @@
 ### [12. 判断大素数](#12)
 ### [13. 线性基](#13)
 ### [14. 康托展开逆展开](#14)
+### [15. 逆元筛](#15)
+### [16. 欧拉函数](#16)
+### [17. 欧拉函数筛](#17)
 
 <span id="1"><h4>1. 大素数模板</h4></span>
 ```cpp
@@ -1076,3 +1079,51 @@ void init(){
         scanf("%d",ka+i);
 }
 ```
+
+<span id="15"><h4>15. 逆元筛</h4></span>
+```cpp
+int inv[MAXN];
+void inv_shai(){
+    inv[1] = 1;
+    for(int i = 2; i < 10000; i++)
+        inv[i] = inv[MOD % i] * (MOD - MOD / i) % MOD;
+}
+```
+
+
+<span id="16"><h4>16. 欧拉函数</h4></span>
+```cpp
+long long phi(long long x)
+{
+    long long rea=x;
+    for(long long i=2;i*i<=x;i++)
+    {
+        if(x%i==0)
+        {
+            rea=rea-rea/i;
+            while(x%i==0)
+                x/=i;
+        }
+    }
+    if(x>1){
+        rea=rea/x*(x-1);
+    }
+    return rea;
+}
+```
+
+
+<span id="17"><h4>17. 欧拉函数筛</h4></span>
+```cpp
+long long E[MAXN];
+void euler_shai()
+{
+    for(int i=2;i<10000;i++){
+        if(!E[i])
+            for(int j=i;j<10000;j+=i){
+                if(!E[j])E[j]=j;
+                E[j]=E[j]/i*(i-1);
+            }
+    }
+}
+···
