@@ -6,6 +6,7 @@
 ### [5.	大整数模板](#5)
 ### [6. 快速约瑟夫环求最后一个](#6)
 ### [7. 高速1\sqrt](#7)
+### [8. 麻将\sqrt](#8)
 
 ---------------------
 <span id="0"><h4>0.	啥也行</h4></span>
@@ -420,3 +421,300 @@ float Q_rsqrt( float number ){
    return y;
 }
 ```
+
+
+<span id="8"><h4>8. 麻将</h4></span>
+input
+5
+1w2w3w4b5b6b7s8s9s1b1b1z2z6z
+1w2w3w4b5b6b7s8s9s1b1b2z2z6z
+1w2w3w4b5b6b7s8s9s1b1b2z2z2z
+1b2b3b4b5b6b2s4s5s5s5s6s7s8s
+1b1b1b2b3b4b5b6b7b8b9b9b9b1s
+
+output
+0
+1
+6z 1b2z
+Tsumo!
+4
+2s 3s4s6s9s
+4s 2s
+5s 3s
+8s 3s
+4
+2b 1s
+5b 1s
+8b 1s
+1s 1b2b3b4b5b6b7b8b9b
+```cpp
+#include <cstdio>
+#include <cmath>
+#include <vector>
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <stack>
+#include <ctime>
+#include <set>
+#define lson l,mid,rt<<1
+#define rson mid+1,r,rt<<1|1
+#define pb push_back
+#define memarray(array,val) memset(array,val,sizeof(array))
+#define rep(i,a,n) for(int i=a;i<=n;i++)
+#define f(i,a,n) for(int i=a;i<=n;i++)
+#define per(i,n,a) for(int i=n;i>=a;i--)
+#define ff(i,n,a) for(int i=n;i>=a;i--)
+using namespace std;
+const int INF=0x3f3f3f3f;
+const double EPS=1e-6;
+const int mod=1000000007;
+const int MAXN=1e6+10;
+const double PI=acos(-1);
+int n,m;
+char str[50];
+int wan[10];
+int suo[10];
+int bing[10];
+int zi[10];
+int tywan[10];
+int tysuo[10];
+int tybing[10];
+int tyzi[10];
+bool check2(){
+    memcpy(tywan,wan,sizeof wan);
+    memcpy(tysuo,suo,sizeof wan);
+    memcpy(tybing,bing,sizeof wan);
+    memcpy(tyzi,zi,sizeof wan);
+    rep(i,1,9){
+        if(!tywan[i])continue;
+        if(tywan[i]<0)return false;
+        while(tywan[i]>=3)tywan[i]-=3;
+        while(tywan[i]){
+            if(i+2>9)return false;
+            tywan[i]--;
+            tywan[i+1]--;
+            tywan[i+2]--;
+        }
+    }
+    rep(i,1,9){
+        if(!tybing[i])continue;
+        if(tybing[i]<0)return false;
+        while(tybing[i]>=3)tybing[i]-=3;
+        while(tybing[i]){
+            if(i+2>9)return false;
+            tybing[i]--;
+            tybing[i+1]--;
+            tybing[i+2]--;
+        }
+    }
+    rep(i,1,9){
+        if(!tysuo[i])continue;
+        if(tysuo[i]<0)return false;
+        while(tysuo[i]>=3)tysuo[i]-=3;
+        while(tysuo[i]){
+            if(i+2>9)return false;
+            tysuo[i]--;
+            tysuo[i+1]--;
+            tysuo[i+2]--;
+        }
+    }
+    rep(i,1,7){
+        if(tyzi[i]%3)return false;
+    }
+    return true;
+}
+bool check(){
+    rep(i,1,9){
+        if(wan[i]>=2){
+            wan[i]-=2;
+            if(check2()){
+                wan[i]+=2;
+                return true;
+            }
+            wan[i]+=2;
+        }
+    }
+    rep(i,1,9){
+        if(bing[i]>=2){
+            bing[i]-=2;
+            if(check2()){
+                bing[i]+=2;
+                return true;
+            }
+            bing[i]+=2;
+        }
+    }
+    rep(i,1,9){
+        if(suo[i]>=2){
+            suo[i]-=2;
+            if(check2()){
+                suo[i]+=2;
+                return true;
+            }
+            suo[i]+=2;
+        }
+    }
+    rep(i,1,7){
+        if(zi[i]>=2){
+            zi[i]-=2;
+            if(check2()){
+                zi[i]+=2;
+                return true;
+            }
+            zi[i]+=2;
+        }
+    }
+    return false;
+}
+vector<pair<int,int>>vec[5][10];
+void go(int t,int id){
+    rep(i,1,9){
+        wan[i]++;
+        if(check()){
+            vec[t][id].pb({1,i});
+        }
+        wan[i]--;
+    }
+    rep(i,1,9){
+        bing[i]++;
+        if(check()){
+            vec[t][id].pb({2,i});
+        }
+        bing[i]--;
+    }
+    rep(i,1,9){
+        suo[i]++;
+        if(check()){
+            vec[t][id].pb({3,i});
+        }
+        suo[i]--;
+    }
+    rep(i,1,7){
+        zi[i]++;
+        if(check()){
+            vec[t][id].pb({4,i});
+        }
+        zi[i]--;
+    }
+}
+void print(int i,int j){
+    char ch;
+    if(i==1)ch='w';
+    if(i==2)ch='b';
+    if(i==3)ch='s';
+    if(i==4)ch='z';
+    printf("%d%c",j,ch);
+}
+void solve(){
+    if(check()){
+        printf("Tsumo!\n");
+        return;
+    }
+    rep(i,1,9){
+        if(!wan[i])continue;
+        wan[i]--;
+        go(1,i);
+        wan[i]++;
+    }
+    rep(i,1,9){
+        if(!bing[i])continue;
+        bing[i]--;
+        go(2,i);
+        bing[i]++;
+    }
+    rep(i,1,9){
+        if(!suo[i])continue;
+        suo[i]--;
+        go(3,i);
+        suo[i]++;
+    }
+    rep(i,1,7){
+        if(!zi[i])continue;
+        zi[i]--;
+        go(4,i);
+        zi[i]++;
+    }
+    int ans=0;
+    rep(i,1,4){
+        int j=i==4?7:9;
+        rep(k,1,j){
+            if(vec[i][k].size()){
+                ans++;
+            }
+        }
+    }
+    printf("%d\n",ans);
+    rep(i,1,4){
+        int j=i==4?7:9;
+        rep(k,1,j){
+            if(vec[i][k].size()){
+                print(i,k);
+                printf(" ");
+                for(auto p:vec[i][k]){
+                    print(p.first,p.second);
+                }
+                printf("\n");
+            }
+        }
+    }
+}
+void init(){
+    memarray(bing,0);
+    memarray(suo,0);
+    memarray(wan,0);
+    memarray(zi,0);
+    rep(i,1,4){
+        int j=i==4?7:9;
+        rep(k,1,j){
+            vec[i][k].clear();
+        }
+    }
+    scanf("%s",str+1);
+    n=strlen(str+1);
+    rep(i,1,n){
+        int num=str[i]-'0';
+        if(str[i+1]=='w'){
+            wan[num]++;
+        }else if(str[i+1]=='s'){
+            suo[num]++;
+        }else if(str[i+1]=='b'){
+            bing[num]++;
+        }else{
+            zi[num]++;
+        }
+        i++;
+    }
+//    rep(i,1,9){
+//        printf("%d ",wan[i]);
+//    }
+//    printf("\n");
+//    rep(i,1,9){
+//        printf("%d ",suo[i]);
+//    }
+//    printf("\n");
+//    rep(i,1,9){
+//        printf("%d ",bing[i]);
+//    }
+//    printf("\n");
+//    rep(i,1,6){
+//        printf("%d ",zi[i]);
+//    }
+//    printf("\n");
+}
+int main()
+{
+    freopen("data.in","r",stdin);
+    int T=1;
+//    int T;
+    scanf("%d",&T);
+    while(T--)
+    {
+        init();
+        solve();
+    }
+    return 0;
+}
+
+```
+
