@@ -811,4 +811,66 @@ void init(){
         b[i]=a[i];
     }
 }
+
+
+-----------------------区间求和
+#include<bits/stdc++.h>
+
+using namespace std;
+
+const int N = 1001000, inf = 1e9;
+typedef long long ll;
+ll sum[N * 60];
+int lc[N * 60], rc[N * 60];
+int cnt;
+
+int ins(int o, int l, int r, int x) {
+    int oo = ++cnt;
+    sum[oo] = sum[o] + x;
+    lc[oo] = lc[o];
+    rc[oo] = rc[o];
+    if (l == r)return oo;
+    int mid = (l + r) / 2;
+    if (x <= mid)lc[oo] = ins(lc[o], l, mid, x);
+    else rc[oo] = ins(rc[o], mid + 1, r, x);
+    return oo;
+}
+
+ll query(int o1, int o2, int l, int r, ll ql, ll qr) {
+    if (ql <= l && r <= qr)return sum[o1] - sum[o2];
+    int mid = (l + r) / 2;
+    ll ret = 0;
+    if (ql <= mid)ret += query(lc[o1], lc[o2], l, mid, ql, qr);
+    if (qr > mid)ret += query(rc[o1], rc[o2], mid + 1, r, ql, qr);
+    return ret;
+}
+
+int rt[N], a[N], n, Q;
+ll lans;
+
+int main() {
+    freopen("data.in","r",stdin);
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cin >> n >> Q;
+    for (int i = 1; i <= n; ++i)
+        cin >> a[i], rt[i] = ins(rt[i - 1], 1, inf, a[i]);
+    while (Q-- > 0) {
+        int l, r;
+        cin >> l >> r;
+        l = (l + lans) % n + 1;
+        r = (r + lans) % n + 1;
+        if (l > r)swap(l, r);
+        ll ans = 0, now_max = 0;
+        for (; ans < inf;) {
+            ll tmp = query(rt[r], rt[l - 1], 1, inf, 1, ans + 1);
+            if (tmp <= ans)break;
+            ans=tmp;
+        }
+        lans = ans + 1;
+        cout << (ans + 1) << '\n';
+    }
+    return 0;
+}
+
 ```
