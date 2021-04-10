@@ -25,6 +25,57 @@ for (int i = 1, j = 0; i <= n; i ++ )
         // 匹配成功后的逻辑
     }
 }
+
+------------------2021/4/10--------------------
+struct KMP{
+    char s[MAXN],t[MAXN];
+    int Next[MAXN];
+    void s_read(){
+        scanf("%s",s+1);
+    }
+    void t_read(){
+        scanf("%s",t+1);
+    }
+    void get_next(){
+        int len=strlen(t+1);
+        int j=0;
+        Next[1]=j;
+        rep(i,2,len){
+            while(j&&t[i]!=t[j+1])
+                j=Next[j];
+            if(t[i]==t[j+1])j++;
+            Next[i]=j;
+        }
+        rep(i,1,len){//[1-i]最小循环节
+            printf("%d ",i-Next[i]);
+        }
+        printf("\n");
+    }
+    void run(){
+        int len1=strlen(s+1);
+        int len2=strlen(t+1);
+        int match_num=0;
+        int j=0;
+        rep(i,1,len1){
+            while(j&&s[i]!=t[j+1])
+                j=Next[j];
+            if(s[i]==t[j+1])j++;
+            if(j==len2){
+                match_num++;
+                j=Next[j];
+            }
+        }
+        printf("%d\n",match_num);
+    }
+}kmp;
+void solve(){
+    kmp.get_next();
+    kmp.run();
+}
+void init(){
+    kmp.s_read();
+    kmp.t_read();
+}
 ```
 
 <span id="2"><h4>2.	马拉车</h4></span>
