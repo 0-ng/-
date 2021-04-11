@@ -76,6 +76,26 @@ void init(){
     kmp.s_read();
     kmp.t_read();
 }
+
+
+---------
+使用第一行字符串的字母组成n个字符的字符串，字符串内不能包含第二行的字符串
+用kmp把第i个字母转到j状态记录，快速幂不计到n即可
+Sample Input
+3
+3
+ab
+ab
+4
+acd
+ca
+5
+ab
+aaa
+Sample Output
+Case 1: 4
+Case 2: 55
+Case 3: 24
 ```
 
 <span id="2"><h4>2.	马拉车</h4></span>
