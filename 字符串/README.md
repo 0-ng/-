@@ -96,6 +96,107 @@ Sample Output
 Case 1: 4
 Case 2: 55
 Case 3: 24
+
+struct KMP{
+    char s[MAXN];
+    char t[MAXN];
+    int Next[MAXN];
+    int len;
+    void s_read(){
+        scanf("%s",s+1);
+    }
+    void t_read(){
+        scanf("%s",t+1);
+    }
+    void get_next(char *str){
+        int j=0;
+        int len= strlen(str+1);
+        rep(i,2,len){
+            while(j&&str[i]!=str[j+1])
+                j=Next[j];
+            if(str[i]==str[j+1])
+                j++;
+            Next[i]=j;
+        }
+    }
+    struct Matrix{
+        int n;
+        unsigned mat[55][55];
+        Matrix(){
+            memarray(mat,0);
+        }
+        Matrix operator*(const Matrix matrix)const{
+            Matrix ret;
+            ret.n=n;
+            rep(i,0,n-1){
+                rep(k,0,n-1){
+                    rep(j,0,n-1){
+                        ret.mat[i][j]+=mat[i][k]*matrix.mat[k][j];
+                    }
+                }
+            }
+            return ret;
+        }
+        void print(){
+            printf("\nmatrix:\n");
+            rep(i,0,n){
+                rep(j,0,n){
+                    printf("%u ",mat[i][j]);
+                }
+                printf("\n");
+            }
+        }
+    };
+    void ksm(Matrix a,int x){
+        Matrix ret;
+        len= strlen(t+1);
+        rep(i,0,len){
+            ret.mat[i][i]=1;
+        }
+        ret.n=len;
+        a.n=len;
+        while(x){
+            if(x&1)
+                ret=ret*a;
+            a=a*a;
+            x>>=1;
+        }
+        unsigned int sum=0;
+        rep(i,0,len-1){
+            sum+=ret.mat[0][i];
+        }
+        printf("%u\n",sum);
+    }
+    void run(){
+        get_next(t);
+        int len1= strlen(s+1);
+        int len2= strlen(t+1);
+        Matrix ret;
+        ret.mat[0][1]=1;
+        ret.mat[0][0]=len1-1;
+        rep(i,1,len2){
+            rep(j,1,len1){
+                int tmp=i;
+                while(tmp&&s[j]!=t[tmp+1])
+                    tmp=Next[tmp];
+                if(s[j]==t[tmp+1])
+                    tmp++;
+                ret.mat[i][tmp]++;
+            }
+        }
+        ret.n=len2;
+        ksm(ret,n);
+    }
+}kmp;
+
+void solve(){
+    kmp.run();
+}
+void init(){
+    scanf("%d",&n);
+    kmp.s_read();
+    kmp.t_read();
+}
 ```
 
 <span id="2"><h4>2.	马拉车</h4></span>
