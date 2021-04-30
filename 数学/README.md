@@ -16,6 +16,7 @@
 ### [15. 逆元筛](#15)
 ### [16. 欧拉函数](#16)
 ### [17. 欧拉函数筛](#17)
+### [18. 线性筛因子个数](#18)
 
 <span id="0"><h4>0. </h4></span>
 可见就是简单的求逆元！但是由于模的是1000，不是素数，不能使用费马小定理和扩展欧几里得来求逆元。需要用下面的公式：
@@ -1131,3 +1132,35 @@ void euler_shai()
     }
 }
 ···
+
+
+<span id="18"><h4>18. 线性筛因子个数</h4></span>
+```cpp
+int primes[MAXN], inp[MAXN];
+ll d[MAXN];
+int minpow[MAXN];
+ 
+void init(){
+    d[1]=1;
+    f(i, 2, MAXN - 5){
+        if(!inp[i]){
+            primes[++ primes[0]] = i;
+            d[i] = 2;
+            minpow[i] = 1;
+        }
+        for(int j = 1; 1LL * i * primes[j] < MAXN; j ++){
+            inp[i * primes[j]] = 1;
+ 
+            if(i % primes[j] == 0){
+                minpow[i * primes[j]] = minpow[i] + 1;
+                d[i * primes[j]] = d[i] / (1 + minpow[i]) * (1 + minpow[i * primes[j]]);
+                break;
+            }
+            else{
+                minpow[i * primes[j]] = 1;
+                d[i * primes[j]] = d[i] * 2;
+            }
+        }
+    }
+}
+```
