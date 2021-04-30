@@ -9,6 +9,7 @@
 ### [8. 麻将\sqrt](#8)
 ### [9. 0/1背包bitset](#9)
 ### [10. codeblock复制粘贴](#10)
+### [11. bitset黑科技](#11)
 
 ---------------------
 <span id="0"><h4>0.	啥也行</h4></span>
@@ -743,4 +744,28 @@ ubuntu下codeblocks解决运行窗口的复制粘贴数据问题
 2.）将Terminal to launch console programs选项改成gnome-terminal -t $TITLE -x。（原来是xterm -T $TITLE -e）。 
     gnome-terminal和xterm的参数表示方法不一样。 
 注意：在Terminal中复制是Ctrl+Shift+C（注意不要按Ctrl+C，Ctrl+C是强制退出），粘贴是Ctrl+Shift+V。
+```
+
+<span id="11"><h4>11. bitset黑科技</h4></span>
+```cpp
+int Q;
+int n;
+bitset<MAXN> dp;
+int main() {
+//    freopen("data.in", "r", stdin);
+    cin >> n;
+    dp[0] = 1;
+    f(i, 1, n){
+        int x;
+        cin >> x;
+        dp |= dp << x;
+    }
+    cout << dp.count() - 1 << endl;
+    dp[0] = 0;
+    for(int i = dp._Find_first(); i != dp.size(); i = dp._Find_next(i)){
+        cout << i << ' ';
+    }
+ 
+    return 0;
+}
 ```
