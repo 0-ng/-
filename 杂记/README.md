@@ -8,6 +8,7 @@
 ### [7. 高速1\sqrt](#7)
 ### [8. 麻将\sqrt](#8)
 ### [9. 0/1背包bitset](#9)
+### [10. codeblock复制粘贴](#10)
 
 ---------------------
 <span id="0"><h4>0.	啥也行</h4></span>
@@ -721,6 +722,7 @@ int main()
 
 
 <span id="9"><h4>9. 0/1背包bitset</h4></span>
+```cpp
 bitset<2000001>d;
 d[0]=1;
 cin>>n;
@@ -730,3 +732,15 @@ for(int&x:A){
 for(int x:A){
     d|=d<<x;
 }
+```
+
+
+
+<span id="10"><h4>10. codeblock复制粘贴</h4></span>
+```cpp
+ubuntu下codeblocks解决运行窗口的复制粘贴数据问题
+1.）在Code::blocks中，点击Settings -> Environment。 
+2.）将Terminal to launch console programs选项改成gnome-terminal -t $TITLE -x。（原来是xterm -T $TITLE -e）。 
+    gnome-terminal和xterm的参数表示方法不一样。 
+注意：在Terminal中复制是Ctrl+Shift+C（注意不要按Ctrl+C，Ctrl+C是强制退出），粘贴是Ctrl+Shift+V。
+```
