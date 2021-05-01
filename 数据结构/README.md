@@ -10,6 +10,7 @@
 ### [9. CDQ分治](#9)
 ### [10. 主席树区间第k小](#10)
 ### [11. ST表](#11)
+### [12. 莫队](#12)
 
 <span id="1"><h4>1.	RMQ</h4></span>
 ```cpp
@@ -878,6 +879,7 @@ int main() {
 
 
 <span id="11"><h4>11.    ST表</h4></span>
+```cpp
     rep(i,1,n){
         scanf("%d",a+i);
         lg[i]=lg[i/2]+1;
@@ -894,3 +896,79 @@ for (int i = 1; i <= n; ++i)
 for (int i = 1; i <= 20; ++i)
     for (int j = 1; j + (1 << i) - 1 <= n; ++j)
         f[j][i] = max(f[j][i - 1], f[j + (1 << (i - 1))][i - 1]);
+```
+
+
+<span id="12"><h4>12.    莫队</h4></span>
+```cpp
+#include<iostream>
+#include<cstdio>
+#include<cmath>
+#include<algorithm>
+#include<cctype>
+using namespace std;
+const int MAXN=50005,MAXM=200005;
+struct A{
+    int l,r,id;
+}q[MAXM];
+int n,m,a[MAXN],num[MAXN],ans[MAXM],tim,answer=0;
+bool cmp(A a,A b)
+{
+    return a.l/tim==b.l/tim?a.r<b.r:a.l<b.l;
+}
+inline int read()
+{
+    char ch=getchar();
+    int x=0;
+    while(!isdigit(ch)) ch=getchar();
+    while(isdigit(ch)){
+        x=x*10+ch-'0';
+        ch=getchar();
+    }
+    return x;
+}
+void add(int pos)
+{
+    if(++num[a[pos]]==1) answer++;
+}
+void remove(int pos)
+{
+    if(!--num[a[pos]])  answer--;
+}
+int main()
+{
+    int i,curl=1,curr=0;
+    n=read();
+    for(i=1;i<=n;i++){
+        a[i]=read();
+    }
+    m=read();
+    tim=sqrt(m);
+    for(i=1;i<=m;i++){
+        q[i].l=read();
+        q[i].r=read();
+        q[i].id=i;
+    }
+    sort(q+1,q+1+m,cmp);
+    for(i=1;i<=m;i++){
+        while(curl<q[i].l){
+            remove(curl++);
+        }
+        while(curl>q[i].l){
+            add(--curl);
+        }
+        while(curr<q[i].r){
+            add(++curr);
+        }
+        while(curr>q[i].r){
+            remove(curr--);
+        }
+        ans[q[i].id]=answer;
+    }
+    for(i=1;i<=m;i++){
+        printf("%d\n",ans[i]);
+    }
+    return 0;
+}
+```		      
+		     
