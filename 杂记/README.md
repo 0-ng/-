@@ -10,7 +10,10 @@
 ### [9. 0/1背包bitset](#9)
 ### [10. codeblock复制粘贴](#10)
 ### [11. bitset黑科技](#11)
-### [11. __黑科技](#11)
+### [12. __黑科技](#12)
+### [13. 输出黑科技](#13)
+### [14. 枚举子集](#14)
+
 
 ---------------------
 <span id="0"><h4>0.	啥也行</h4></span>
@@ -805,4 +808,15 @@ template <typename... T>
 void write(T &&...args) {
     ((cout << args), ...);
 }
+```
+
+
+<span id="14"><h4>14. 枚举子集</h4></span>
+```cpp
+    int S = (1 << m) - 1 - sta;
+    int sub = S;
+    do{
+        if(!st[sta | sub]) (v += dfs(cur + 1, sub)) %= MOD;
+        sub = (sub - 1) & S;
+    }while(sub != S);
 ```
