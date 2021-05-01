@@ -785,4 +785,13 @@ int main() {
 返回x的奇偶校验位，也就是x的1的个数模2的结果。
 
 此外，这些函数都有相应的usigned long和usigned long long版本，只需要在函数名后面加上l或ll就可以了，比如int __builtin_clzll。
+
+
+状压dp拿出每一个1
+ int tmp = (1 << n) - 1 - S;
+    while(tmp){
+        int j = __builtin_ffs(tmp) - 1;
+        tmp ^= (1 << j);
+    }
+    
 ```
