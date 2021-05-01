@@ -795,3 +795,14 @@ int main() {
     }
     
 ```
+
+
+<span id="13"><h4>13. 输出黑科技</h4></span>
+```cpp
+#define deb(x) cout << #x << " is " << x << "\n"
+ 
+template <typename... T>
+void write(T &&...args) {
+    ((cout << args), ...);
+}
+```
