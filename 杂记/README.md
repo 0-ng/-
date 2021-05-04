@@ -13,7 +13,7 @@
 ### [12. __黑科技](#12)
 ### [13. 输出黑科技](#13)
 ### [14. 枚举子集](#14)
-
+### [15. 宏](#15)
 
 ---------------------
 <span id="0"><h4>0.	啥也行</h4></span>
@@ -802,20 +802,12 @@ int main() {
 
 <span id="13"><h4>13. 输出黑科技</h4></span>
 ```cpp
-#define deb(x) cout << #x << " is " << x << "\n"
  
 template <typename... T>
 void write(T &&...args) {
     ((cout << args), ...);
 }
 
-// bitwise ops
-// also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
-constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
-constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
-	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
-constexpr int p2(int x) { return 1<<x; }
-constexpr int msk2(int x) { return p2(x)-1; }
 ```
 
 
@@ -827,4 +819,17 @@ constexpr int msk2(int x) { return p2(x)-1; }
         if(!st[sta | sub]) (v += dfs(cur + 1, sub)) %= MOD;
         sub = (sub - 1) & S;
     }while(sub != S);
+```
+
+<span id="15"><h4>15. 宏</h4></span>
+```cpp
+#define deb(x) cout << #x << " is " << x << "\n"
+
+// bitwise ops
+// also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
+constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
+	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
+constexpr int p2(int x) { return 1<<x; }
+constexpr int msk2(int x) { return p2(x)-1; }
 ```
