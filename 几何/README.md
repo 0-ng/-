@@ -22,6 +22,8 @@
 ### [19. KD-Tree](#19)
 ### [20. 圆的反演](#20)
 ### [21. 两圆切线](#21)
+### [22. 最大空凸包](#22)
+
 
 
 <span id="0"><h4>0. 基础</h4></span>
@@ -1938,5 +1940,91 @@ int GCCI(Circle A,Circle B){//Get_Circle_Circle_Intersection
         ANS[++cnt].s=A.point(base-da); ANS[cnt].e=B.point(base-da+PI);
     }
     return cnt;
+}
+```
+
+
+<span id="22"><h4>22. 最大空凸包</h4></span>
+```cpp
+struct Point{
+    long long x,y;
+    void read(){
+        scanf("%lld%lld",&x,&y);
+    }
+//    bool operator<(const Point p)const{
+//        if(x!=p.x)return x<p.x;
+//        return y<p.y;
+//    }
+    bool operator==(const Point p)const{
+        return x==p.x&&y==p.y;
+    }
+    Point operator-(const Point p)const{
+        return (Point){x-p.x,y-p.y};
+    }
+    long long operator^(const Point p)const{
+        return x*p.y-y*p.x;
+    }
+    double len(){
+        return sqrt(x*x+y*y);
+    }
+}PPP[MAXN],List[MAXN];
+long long ans;
+long long opt[MAXN][MAXN];
+int seq[MAXN];
+const double zero=1e-8;
+
+inline bool operator <(Point a,Point b){
+    return (b.y>a.y)||(b.y==a.y)&&(b.x>a.x);
+}
+
+bool Compare(Point a,Point b){
+    long long temp=(a^b);
+    if (temp!=0)return temp>0;
+    return b.len()-a.len()>0;
+}
+void Solve(int vv){
+    int len=0;
+    rep(ii,1,n){
+        if(PPP[vv]<PPP[ii]){
+            List[++len]=PPP[ii]-PPP[vv];
+        }
+    }
+    rep(i,1,len){
+        rep(j,1,len){
+            opt[i][j]=0;
+        }
+    }
+    sort(List+1,List+1+len,Compare);
+    long long v;
+    rep(t,2,len) {
+        int _len = 0, i, j;
+        for (i = t - 1; i >= 1 && (List[t] ^ List[i]) == 0; i--);;;;;
+        while (i >= 1) {
+            v = (List[i] ^ List[t]);
+            seq[++_len] = i;
+            for (j = i - 1; j >= 1 && ((List[i] - List[t]) ^ (List[j] - List[t])) > 0; j--);;;;;
+            if (j >= 1)v += opt[i][j];
+            ans = max(ans, v);
+            opt[t][i] = v;
+            i = j;
+        }
+        for (i = _len - 1; i >= 1; i--)
+            opt[t][seq[i]] = max(opt[t][seq[i]], opt[t][seq[i + 1]]);
+    }
+}
+void solve(){
+    ans=0;
+    rep(i,1,n){
+        Solve(i);
+    }
+    printf("%lld.",ans/2);
+    if(ans%2)printf("5\n");
+    else printf("0\n");
+}
+void init(){
+    scanf("%d",&n);
+    rep(i,1,n){
+        PPP[i].read();
+    }
 }
 ```
