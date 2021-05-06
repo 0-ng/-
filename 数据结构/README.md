@@ -11,6 +11,7 @@
 ### [10. 主席树区间第k小](#10)
 ### [11. ST表](#11)
 ### [12. 莫队](#12)
+### [13. 红黑树黑科技](#13)
 
 <span id="1"><h4>1.	RMQ</h4></span>
 ```cpp
@@ -971,4 +972,109 @@ int main()
     return 0;
 }
 ```		      
-		     
+
+
+<span id="13"><h4>13.    红黑树黑科技</h4></span>
+/*
+template<class T> using Tree = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
+定义一颗红黑树
+int 关键字类型
+null_type无映射(低版本g++为null_mapped_type)
+less<int>从小到大排序
+rb_tree_tag 红黑树（splay_tree_tag）
+tree_order_statistics_node_update结点更新
+插入t.insert();
+删除t.erase();
+Rank:t.order_of_key();
+第K值:t.find_by_order(); t.find_by_order(0)第1个数
+前驱:t.lower_bound();
+后继t.upper_bound();
+a.split(v,b)key小于等于v的元素属于a，其余的属于b //b之前的会被清空
+T.lower_bound(x)   >=x的min的迭代器
+T.upper_bound((x)  >x的min的迭代器
+T.find_by_order(k) 有k个数比它小的数
+
+
+Tree<int> t;
+t.insert(1);
+t.insert(2);
+t.insert(2);
+t.insert(3);
+debug(t.size());
+debug(t.order_of_key(0));
+debug(t.order_of_key(1));
+debug(t.order_of_key(2));
+debug(t.order_of_key(3));
+debug(t.order_of_key(4));
+debug(*t.find_by_order(0));
+debug(*t.find_by_order(1));
+debug(*t.find_by_order(2));
+debug(*t.find_by_order(3));
+debug(*t.find_by_order(4));
+debug(*t.lower_bound(0));
+debug(*t.lower_bound(1));
+debug(*t.lower_bound(2));
+debug(*t.lower_bound(3));
+debug(*t.lower_bound(4));
+debug(t.lower_bound(4)==t.end());
+
+t.size() 3
+t.order_of_key(0) 0
+t.order_of_key(1) 0
+t.order_of_key(2) 1
+t.order_of_key(3) 2
+t.order_of_key(4) 3
+*t.find_by_order(0) 1
+*t.find_by_order(1) 2
+*t.find_by_order(2) 3
+*t.find_by_order(3) 0
+*t.find_by_order(4) 0
+*t.lower_bound(0) 1
+*t.lower_bound(1) 1
+*t.lower_bound(2) 2
+*t.lower_bound(3) 3
+t.lower_bound(4)==t.end() 1
+
+```cpp
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+
+using namespace std;
+using namespace __gnu_pbds;
+
+template<class T> using Tree = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
+
+const int MX = 1e5+5;
+#define sz(x) (int)(x).size()
+
+int N, a[MX], ind[MX], ans[MX], ret;
+vector<int> child[MX];
+Tree<int> d[MX];
+
+void comb(int a, int b) {
+	if (sz(d[a]) < sz(d[b])) d[a].swap(d[b]);
+	for (int i: d[b]) d[a].insert(i);
+}
+
+void dfs(int x) {
+	ind[x] = x;
+	for (int i: child[x]) {
+		dfs(i);
+		comb(x,i);
+	}
+	ans[x] = sz(d[x])-d[x].order_of_key(a[x]);
+	d[x].insert(a[x]);
+}
+
+int main() {
+	freopen("promote.in","r",stdin);
+	freopen("promote.out","w",stdout);
+	cin >> N; for (int i = 1; i <= N; ++i) cin >> a[i];
+	for (int i = 2; i <= N; ++i) {
+		int p; cin >> p;
+		child[p].push_back(i);
+	}
+	dfs(1);
+	for (int i = 1; i <= N; ++i) cout << ans[i] << "\n";
+}
+```
