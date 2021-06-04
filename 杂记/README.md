@@ -14,6 +14,7 @@
 ### [13. 输出黑科技](#13)
 ### [14. 枚举子集](#14)
 ### [15. 宏](#15)
+### [16. 对拍](#16)
 
 ---------------------
 <span id="0"><h4>0.	啥也行</h4></span>
@@ -834,4 +835,49 @@ constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until US
 	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
 constexpr int p2(int x) { return 1<<x; }
 constexpr int msk2(int x) { return p2(x)-1; }
+```
+
+<span id="16"><h4>16. 对拍</h4></span>
+```cpp
+@echo off  
+:loop  
+    rand.exe %random% > data.in
+    std.exe < data.in > std.out
+    my.exe < data.in > my.out
+    fc my.out std.out 
+if not errorlevel 1 goto loop  
+pause
+goto loop
+
+#include<bits/stdc++.h>
+using namespace std;
+#define random(a,b) ((a)+rand()%((b)-(a)+1))
+
+stringstream ss;
+
+int main( int argc, char *argv[] )
+{ 
+    int seed=time(NULL);
+    if(argc > 1)//如果有参数
+    {
+        ss.clear();
+        ss<<argv[1];
+        ss>>seed;//把参数转换成整数赋值给seed
+    }
+    srand(seed);
+    //以上为随机数初始化，请勿修改
+    //random(a,b)生成[a,b]的随机整数
+
+    //以下写你自己的数据生成代码 
+    printf("1\n");
+    int n=10;
+    int m=random(1,20);
+    printf("%d %d\n",n,m);
+    for(int i=0 ; i<n ; ++i)
+    {
+        printf(" %d ",random(0,m));
+    }
+    printf("\n");
+    return 0;
+}
 ```
