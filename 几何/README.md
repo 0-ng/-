@@ -23,6 +23,7 @@
 ### [20. 圆的反演](#20)
 ### [21. 两圆切线](#21)
 ### [22. 最大空凸包](#22)
+### [23. 圆与多边形的面积交](#23)
 
 
 
@@ -2026,5 +2027,63 @@ void init(){
     rep(i,1,n){
         PPP[i].read();
     }
+}
+```
+
+
+<span id="23"><h4>23. 圆与多边形的面积交</h4></span>
+```cpp
+double sqr(double a) {
+    return a * a;
+}
+
+double Triangle_cross_Circle(Point A, Point B, Point C, double r) {
+    double a, b, c, x, y;
+    double s = 0.5 * ((A - C) ^ (B - C));
+
+    a = (B - C).len();
+    b = (A - C).len();
+    c = (A - B).len();
+
+    if (a <= r && b <= r) return s;
+    else if (a < r && b >= r) {
+        x = ((A - B) * (C - B) + sqrt(c * c * r * r - sqr((A - B) ^ (C - B)))) / c;
+        return asin(s * (c - x) * 2.0 / c / b / r) * r * r * 0.5 + s * x / c;
+    } else if (a >= r && b < r) {
+        y = ((B - A) * (C - A) + sqrt(c * c * r * r - sqr((B - A) ^ (C - A)))) / c;
+        return asin(s * (c - y) * 2.0 / c / a / r) * r * r * 0.5 + s * y / c;
+    } else {
+        if (fabs(2.0 * s) >= r * c || (B - A) * (C - A) <= 0 || (A - B) * (C - B) <= 0) {
+            if ((A - C) * (B - C) < 0) {
+                if (((A - C) ^ (B - C)) < 0) return (-PI - asin(s * 2.0 / a / b)) * r * r * 0.5;
+                else return (PI - asin(s * 2.0 / a / b)) * r * r * 0.5;
+            } else return asin(s * 2.0 / a / b) * r * r * 0.5;
+        } else {
+            x = ((A - B) * (C - B) + sqrt(c * c * r * r - sqr((A - B) ^ (C - B)))) / c;
+            y = ((B - A) * (C - A) + sqrt(c * c * r * r - sqr((B - A) ^ (C - A)))) / c;
+            return (asin(s * (1 - x / c) * 2 / r / b) + asin(s * (1 - y / c) * 2 / r / a)) * r * r * 0.5 +
+                   s * ((y + x) / c - 1);
+        }
+    }
+}
+
+double check(int n, Point cir, double r) {
+    double res = 0.0;
+    p[n] = p[0];
+    for (int i = 0; i < n; ++i)
+        res += Triangle_cross_Circle(p[i], p[i + 1], cir, r);
+    return abs(res);
+}
+
+void solve() {
+    o.read();
+    double r = 1;
+    cout << check(n, o, r) << endl;
+}
+
+void init() {
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++)
+        p[i].read();
 }
 ```
