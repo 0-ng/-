@@ -2,6 +2,7 @@
 ### [1.	KMP](#1)
 ### [2.	马拉车](#2)
 ### [3.	AC自动机](#3)
+### [4. 字符串转移n\sqrt(n)](#4)
 
 <span id="1"><h4>1.	KMP</h4></span>
 ```cpp
@@ -315,5 +316,29 @@ void init() {
         scanf("%s",p),AC.ins(p);
     AC.build();
     scanf("%s",p);
+}
+```
+
+<span id="4"><h4>4.	字符串转移n\sqrt(n)</h4></span>
+```cpp
+#include <bits/stdc++.h>
+#include <ext/rope>
+using namespace std;
+using namespace __gnu_cxx;
+int main()
+{
+    int n,m,p,s;
+    cin>>n>>m;
+    rope<int>r;
+    for(int i=0;i<n;i++)
+           r.push_back(i+1);
+    while(m--)
+    {
+        scanf("%d%d",&p,&s);
+        r=r.substr(p-1,s)+r.substr(0,p-1)+r.substr(p+s-1,n-(p+s-1));
+        //r=r.substr(1,2);
+    }
+    for(int i=0;i<r.size();i++)
+        printf("%d ",r[i]);
 }
 ```
