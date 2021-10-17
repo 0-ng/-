@@ -261,62 +261,75 @@ void solve(){
 
 <span id="3"><h4>3.	AC自动机</h4></span>
 ```cpp
-struct Aho_Corasick_Automaton{
-    int c[MAXN][26],val[MAXN],fail[MAXN],cnt;
-    void ins(char *s){
-        int len=strlen(s);int now=0;
-        for(int i=0;i<len;i++){
-            int v=s[i]-'a';
-            if(!c[now][v])
-                c[now][v]=++cnt;
-            now=c[now][v];
-        }
-        val[now]++;
+
+struct AutoACMachine{
+    int trie[MAXN][30];
+    int fail[MAXN];
+    int num[MAXN];
+    int cnt;
+    void init(){
+        memarray(trie,0);
+        memarray(fail,0);
+        memarray(num,0);
+        cnt=0;
     }
-    void build(){
+    void insert(char *str){
+        int len=strlen(str);
+        int now=0;
+        rep(i,0,len-1){
+            if(!trie[now][str[i]-'a']){
+                trie[now][str[i]-'a']=++cnt;
+            }
+            now=trie[now][str[i]-'a'];
+        }
+        num[now]++;
+    }
+    void getFail(){
         queue<int>q;
-        for(int i=0;i<26;i++){
-            if(c[0][i]){
-                fail[c[0][i]]=0;
-                q.push(c[0][i]);
+        rep(i,0,25){
+            if(trie[0][i]){
+                fail[trie[0][i]]=0;
+                q.push(trie[0][i]);
             }
         }
         while(!q.empty()){
-            int u=q.front();q.pop();
-            for(int i=0;i<26;i++){
-                if(c[u][i]){
-                    fail[c[u][i]]=c[fail[u]][i];
-                    q.push(c[u][i]);
+            int now=q.front();q.pop();
+            rep(i,0,25){
+                if(trie[now][i]){
+                    fail[trie[now][i]]=trie[fail[now]][i];
+                    q.push(trie[now][i]);
                 }else{
-                    c[u][i]=c[fail[u]][i];
+                    trie[now][i]=trie[fail[now]][i];
                 }
             }
         }
     }
-    int query(char *s){
-        int len=strlen(s);
-        int now=0,ans=0;
-        for(int i=0;i<len;i++){
-            now=c[now][s[i]-'a'];
-            for(int t=now;t&&~val[t];t=fail[t]){
-                ans+=val[t];
-                val[t]=-1;
+    int query(char *str){
+        int len=strlen(str);
+        int now=0;
+        int ret=0;
+        rep(i,0,len-1){
+            now=trie[now][str[i]-'a'];
+            for(int j=now;j&&~num[j];j=fail[j]){
+                ret+=num[j];
+                num[j]=-1;
             }
         }
-        return ans;
+        return ret;
     }
-}AC;
-char p[MAXN];
-void solve() {
-    int ans=AC.query(p);
-    printf("%d\n",ans);
+}ac;
+void solve(){
+    ac.getFail();
+    scanf("%s",str);
+    printf("%d\n",ac.query(str));
 }
-void init() {
+void init(){
     scanf("%d",&n);
-    for(int i=1;i<=n;i++)
-        scanf("%s",p),AC.ins(p);
-    AC.build();
-    scanf("%s",p);
+    ac.init();
+    rep(i,1,n){
+        scanf("%s",str);
+        ac.insert(str);
+    }
 }
 ```
 
