@@ -342,3 +342,34 @@ int main()
         printf("%d ",r[i]);
 }
 ```
+
+<span id="5"><h4>5.	trie树</h4></span>
+```cpp
+struct Trie{
+    int tree[MAXN][30];
+    int num[MAXN*30];
+    int cnt;
+    void insert(char *str){
+        int len=strlen(str);
+        int now=0;
+        rep(i,0,len-1){
+            if(!tree[now][str[i]-'a']){
+                tree[now][str[i]-'a']=++cnt;
+            }
+            now=tree[now][str[i]-'a'];
+            num[now]++;
+        }
+    }
+    int check(char *str){
+        int len=strlen(str);
+        int now=0;
+        rep(i,0,len-1){
+            if(!tree[now][str[i]-'a']){
+                return 0;
+            }
+            now=tree[now][str[i]-'a'];
+        }
+        return num[now];
+    }
+}trie;
+```
