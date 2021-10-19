@@ -202,60 +202,57 @@ void init(){
 ```
 
 <span id="2"><h4>2.	马拉车</h4></span>
-```cpp
-char beginn[MAXN],endd[MAXN];
-int len[MAXN];
-int  tralation()
-{
-	int gg=strlen(beginn);
-	int noww=0;
-	endd[0]='&';
-	for(int i=0;i<gg;i++)
-	{
-		endd[++noww]='#';
-		endd[++noww]=beginn[i];
-	}
-	endd[++noww]='#';
-	return noww;
-}
-int Manacher(int total)
-{
-	int maxx = 0;
-	int mx = 0,id = 0; 
-	//id表示的最大回文的中心点是哪一个 而mx表示的是最大回文的中心点的最远的边界是哪一个
-	for(int i =1;i<=total;i++)
-	{
-		if(i<mx) //如果此刻 i的点比mx还要小的话说明 在mx-i处这边是回文 然后在比较一下
-			len[i] = min(mx - i,len[2*id-i]); 
-		//因为2*id - i 和 i 他们是相对于id对称的 所以说吧 就是要比较mx-i和len[2*id-i] ;
-		
-		else len[i] = 1; //如果此刻i的点比边界还要大的话 那就需要从一开始加了
-		while(endd[i+len[i]]==endd[i-len[i]])
-			len[i]++;
-		if(i+len[i]>mx)
-		{
-			mx = i+len[i];
-			id = i;
-		}
-		/*能到结尾最长的回文串 murderforajarof=6*/
-		if(i+len[i]-1==total){
+```cppstruct Manacher{
+    char str[MAXN*2];
+    int len[MAXN*2];//len[i]-1为以i为中心的最长回文字符串长度
+    int size;
+    void transform(char *s){
+        int len=strlen(s);
+        size=0;
+        str[size++]='$';
+        rep(i,0,len-1){
+            str[size++]='#';
+            str[size++]=s[i];
+        }
+        str[size++]='#';
+        str[size++]='*';
+        str[size]=0;
+    }
+    void run(){
+        int maxx=0;
+        int mx=-1,id=-1;
+        rep(i,0,size-1){
+            if(mx>=i)len[i]=min(len[2*id-i],mx-i+1);
+            else len[i]=1;
+            while(str[i-len[i]]==str[i+len[i]])len[i]++;
+            if(i+len[i]-1>mx){
+                mx=i+len[i]-1;
+                id=i;
+            }
+            /*能到结尾最长的回文串 murderforajarof=6*/
+            if(i+len[i]-1==size){
+                maxx = max(maxx,len[i]);
+            }
+            /**/
+
+            /*最长的回文串*/
             maxx = max(maxx,len[i]);
-		}
-		/**/
-
-		/*最长的回文串*/
-		maxx = max(maxx,len[i]);
-		/**/
-	}
-	return maxx-1;
-}
-void solve(){
-
-    int total = tralation();
-    int ans = Manacher(total);
-    printf("%d\n",n-ans);
-
-}
+            /**/
+        }
+        int mxlen=-1,l=0,r=-1;
+        rep(i,0,size-1){
+            if(len[i]-1>mxlen){
+                mxlen=len[i]-1;
+                l=i-(len[i]-1)+1;
+                r=i+(len[i]-1)-1;
+            }
+        }
+        for(int i=l;i<=r;i+=2){
+            printf("%c",str[i]);
+        }
+        printf("\n");
+    }
+}manacher;
 ```
 
 
