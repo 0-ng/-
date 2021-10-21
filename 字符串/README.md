@@ -425,7 +425,7 @@ struct SA{
     }
     void getHeight(char *str){
         rep(i,1,n)rk[sa[i]]=i;
-        int k=0;
+        int k=0;height[1]=0;
         rep(i,1,n){
             if(rk[i]==1)continue;
             if(k)k--;
