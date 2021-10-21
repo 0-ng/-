@@ -4,6 +4,7 @@
 ### [3.	AC自动机](#3)
 ### [4. 字符串转移n\sqrt(n)](#4)
 ### [5. trie树](#5)
+### [6. 后缀数组](#6)
 
 <span id="1"><h4>1.	KMP</h4></span>
 ```cpp
@@ -383,4 +384,61 @@ struct Trie{
         return num[now];
     }
 }trie;
+```
+
+<span id="6"><h4>6.	后缀数组</h4></span>
+```cpp
+struct SA{
+    int n,m;
+    int x[MAXN],y[MAXN],c[MAXN];
+    int sa[MAXN],rk[MAXN],height[MAXN];
+    void run(char *str){
+        str[strlen(str+1)+1]='0';
+        str[strlen(str+1)+2]=0;
+        getSA(str);
+        getHeight(str);
+    }
+    void getSA(char* str){
+        n=strlen(str+1);m=127;
+        rep(i,1,m)c[i]=0;
+        rep(i,1,n)c[x[i]=str[i]]++;
+        rep(i,1,m)c[i]+=c[i-1];
+        per(i,n,1)sa[c[x[i]]--]=i;
+        for(int k=1;k<=n;k<<=1){
+            int num=0;
+            rep(i,n-k+1,n)y[++num]=i;
+            rep(i,1,n)if(sa[i]>k)y[++num]=sa[i]-k;
+            rep(i,1,m)c[i]=0;
+            rep(i,1,n)c[x[i]]++;
+            rep(i,1,m)c[i]+=c[i-1];
+            per(i,n,1)sa[c[x[y[i]]]--]=y[i],y[i]=0;
+            swap(x,y);
+            x[sa[1]]=1;num=1;
+            rep(i,2,n){
+                if(y[sa[i]]==y[sa[i-1]]&&y[sa[i]+k]==y[sa[i-1]+k]){}
+                else num++;
+                x[sa[i]]=num;
+            }
+            if(num==n)break;
+            m=num;
+        }
+    }
+    void getHeight(char *str){
+        rep(i,1,n)rk[sa[i]]=i;
+        int k=0;
+        rep(i,1,n){
+            if(rk[i]==1)continue;
+            if(k)k--;
+            int j=sa[rk[i]-1];
+            while(i+k<=n&&j+k<=n&&str[i+k]==str[j+k])k++;
+            height[rk[i]]=k;
+        }
+    }
+    int LCP(int l,int r){
+        if(l==r)return n-l+1;
+        l=rk[l];r=rk[r];
+        if(r<l)swap(l,r);
+        return rmq.getMIN(l+1,r);
+    }
+}sa;
 ```
