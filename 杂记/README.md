@@ -170,6 +170,198 @@ long long merge_sort(int l,int r){
 ```
 <span id="5"><h4>5.	大整数模板</h4></span>
 ```cpp
+//test
+struct BigInteget{ // 非负整数范围运行
+    int digit[MAXN];
+    int length;
+    BigInteget(){
+        memset(digit, 0, sizeof(digit));
+        length = 0;
+    }
+    BigInteget(int x){
+        memset(digit, 0, sizeof(digit));
+        length = 0;
+        if(x == 0)
+            digit[length++] = x;
+        while(x) {
+            digit[length++] = x % 10;
+            x /= 10;
+        }
+    }
+    BigInteget(string str){
+        memset(digit, 0, sizeof(digit));
+        length = str.size();
+        for(int i = 0; i < length; i++)
+            digit[i] = str[length - i - 1] - '0';
+    }
+    BigInteget(const BigInteget& b){
+        memset(digit, 0, sizeof(digit));
+        length = b.length;
+        for(int i = 0; i < length; i++)
+            digit[i] = b.digit[i];
+    }
+    BigInteget operator = (int x){
+        memset(digit, 0, sizeof(digit));
+        length = 0;
+        if(x == 0)
+            digit[length++] = x;
+        while(x){
+            digit[length++] = x % 10;
+            x /= 10;
+        }
+        return *this;
+    }
+    BigInteget operator = (string str){
+        memset(digit, 0, sizeof(digit));
+        length = str.size();
+        for(int i = 0; i < length; i++)
+            digit[i] = str[length - i - 1] - '0';
+        return *this;
+    }
+    BigInteget operator = (const BigInteget& b){
+        memset(digit, 0, sizeof(digit));
+        length = b.length;
+        for(int i = 0; i < length; i++)
+            digit[i] = b.digit[i];
+        return *this;
+    }
+    bool operator <= (const BigInteget& b) {
+        if(length < b.length) return true;
+        else if (b.length < length) return false;
+        else {
+            for(int i = length - 1; i >= 0; i--) {
+                if(digit[i] == b.digit[i]) continue;
+                else return digit[i] < b.digit[i];
+            }
+        }
+        return true;
+    }
+    bool operator == (const BigInteget& b){
+        if(length != b.length) return false;
+        else{
+            for(int i = length -1; i >= 0; i--){
+                if(digit[i] != b.digit[i])
+                    return false;
+            }
+        }
+        return true;
+    }
+    bool operator > (const BigInteget &b) {
+        if(length > b.length) return true;
+        else if(b.length > length) return false;
+        else {
+            for(int i = length - 1; i >= 0; i--) {
+                if(digit[i] == b.digit[i]) continue;
+                else return digit[i] > b.digit[i];
+            }
+        }
+        return false;
+    }
+    BigInteget operator + (const BigInteget& b){
+        BigInteget answer;
+        int carry = 0;
+        for(int i = 0; i < length || i < b.length; i++){
+            int current = carry + digit[i] + b.digit[i];
+            carry = current /10;
+            answer.digit[answer.length++] = current % 10;
+        }
+        if(carry){
+            answer.digit[answer.length++] = carry;
+        }
+        return answer;
+    }
+    BigInteget operator - (const BigInteget& b){
+        BigInteget answer;
+        int carry = 0;
+        for(int i = 0; i < length; i++){
+            int current = digit[i] - b.digit[i] - carry;
+            if(current < 0) {
+                current += 10;
+                carry = 1;
+            } else carry  = 0;
+            answer.digit[answer.length++] = current;
+        }
+        while(answer.digit[answer.length - 1] == 0 && answer.length > 1){
+            //书上在这里写得是answer.digit[answer.length]
+            answer.length--;
+        }
+        return answer;
+    }
+    BigInteget operator * (const BigInteget& b){
+        BigInteget answer;
+        answer.length = length + b.length;
+        for(int i = 0; i < length; i++){
+            for(int j = 0; j < b.length; j++)
+                answer.digit[i+j] += digit[i] * b.digit[j];
+        }
+        for(int i = 0; i < answer.length; i++){
+            answer.digit[i+1] += answer.digit[i] / 10;
+            answer.digit[i] %= 10;
+        }
+        while(answer.digit[answer.length - 1] == 0 && answer.length > 1){
+            //书上在这里写得是answer.digit[answer.length]
+            answer.length--;
+        }
+        return answer;
+    }
+    BigInteget operator / (const BigInteget& b){
+        BigInteget answer;
+        answer.length = length;
+        BigInteget remainder = 0;
+        BigInteget temp = b;
+        for(int i = length - 1; i >= 0; i--){
+            if(!(remainder.length == 1 && remainder.digit[0] == 0)){
+                for(int j = remainder.length -1; j >= 0; j--)
+                    remainder.digit[j + 1] = remainder.digit[j];
+                remainder.length++;
+            }
+            remainder.digit[0] = digit[i];
+            while(temp <= remainder){
+                remainder = remainder - temp;
+                answer.digit[i]++;
+            }
+        }
+        while(answer.digit[answer.length - 1] == 0 && answer.length > 1){
+            //书上在这里写得是answer.digit[answer.length]
+            answer.length--;
+        }
+        return answer;
+    }
+    BigInteget operator % (const BigInteget &b){
+        BigInteget remainder = 0;
+        BigInteget temp = b;
+        for(int i = length - 1; i >= 0; i--) {
+            if(!(remainder.length == 1 && remainder.digit[0] == 0)){
+                for(int j = remainder.length - 1; j >= 0; j--)
+                    remainder.digit[j + 1] = remainder.digit[j];
+                remainder.length++;
+            }
+            remainder.digit[0] = digit[i];
+            while(temp <= remainder){
+                remainder = remainder - temp;
+            }
+        }
+        return remainder;
+    }
+    istream& operator >> (istream& in){
+        string str;
+        in >> str;
+        *this = str;
+        return in;
+    }
+    ostream& operator << (ostream& out){
+        for(int i = length - 1; i >= 0; i--)
+            out << digit[i];
+        return out;
+    }
+    void show(){
+        for(int i = length - 1; i >= 0; i--)
+            printf("%d", digit[i]);
+    }
+}dp[55][1005];
+
+```
+```cpp
 struct BigInteget{ // 非负整数范围运行
     int digit[N];
     int length;
